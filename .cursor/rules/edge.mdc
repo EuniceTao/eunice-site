@@ -1,0 +1,55 @@
+---
+globs: **/functions/**,**/supabase/functions/**
+alwaysApply: false
+description: 每次写云函数的时候参考如下规则
+---
+
+当你用 Supabase 编写云函数的时候，先用 Supabase MCP 阅读所有云函数的写法。
+每当让你做数据库的时候，也先用 Supabase MCP 先看一下目前数据库的结构。
+
+## 共享基础层设计（_shared 文件夹）
+
+本项目已经为 Supabase Edge Functions（Deno）编写了优质的共享基础层 `_shared` 文件夹，供各业务云函数复用：
+
+### 1) cors.ts
+- 提供 `corsHeaders` 以复用跨域响应头，预检与错误响应由 `edgeFunction` 统一兜底。
+
+### 2) edgeFunction.ts
+- 能力（MVP 仅保留新方式）：
+  - `serveEdgeFunction(handler, options?)`: 内置 `Deno.serve`，自动注入 `supabaseService`（Service Role 客户端），可选强制认证；
+  - 统一错误结构 `{ error: { message } }`，错误响应带 `corsHeaders`。
+
+### 3) supabaseClient.ts
+- `getSupabaseClient()` 通过 `SUPABASE_URL`、`SUPABASE_SERVICE_ROLE_KEY` 初始化服务端客户端。
+- 用于受信任的边缘函数（非前端）。
+
+### 4) auth.ts
+- `authenticateUser(supabase, req)`：仅从 `Authorization: Bearer <token>` 读取 token，返回 `{ user, isAuthenticated, error }`。
+- `requireAuth(supabase, req)`：未认证抛错，认证通过返回 `user`。
+
+## 使用规则
+- 必须登录：用 `requireAuth`。
+- 可选登录：用 `authenticateUser`，按需分支处理。
+- 业务失败：直接 `throw new Error('message')`，交给 `edgeFunction` 统一格式化。
+
+## 推荐示例
+
+自动 `Deno.serve` + 可选认证 + 注入 supabaseService/user：
+
+```ts
+import { serveEdgeFunction } from "../_shared/edgeFunction.ts";
+import { corsHeaders } from "../_shared/cors.ts";
+
+serveEdgeFunction(async ({ req, supabaseService, user }) => {
+  return new Response(JSON.stringify({ ok: true, user: !!user }), {
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+});
+```
+
+## 代码质量要求
+
+- 每个云函数文件都需要编写详尽的注释。
+- 在函数的重要时机，比如返回前、逻辑处理前，都添加详尽的云函数 console log 和中文代码注释。
+- 如果是 POST 方法，云函数 console log 应当能够打印 POST 方法传入的值。
+- 方便用户在 Supabase 后台看到云函数 console info、error 等 log。
