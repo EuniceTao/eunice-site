@@ -7,6 +7,13 @@
 @layer base {
   :root {
     color-scheme: light; /* 明亮模式 */ 
+    --bg: #F3F5F9; /* 参考图的柔和浅灰底 */
+    --surface: #FFFFFF; /* 卡片表面 */
+    --surface-soft: rgba(255, 255, 255, 0.7); /* 玻璃感/轻柔 */
+    --border: rgba(2, 6, 23, 0.08); /* 比 slate-200 更克制 */
+    --shadow-soft: 0 10px 30px rgba(2, 6, 23, 0.06);
+    --shadow-lift: 0 18px 60px rgba(2, 6, 23, 0.10);
+    --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -1px 0 rgba(2, 6, 23, 0.04);
   }
 
   html,
@@ -20,10 +27,35 @@
       "Segoe UI Emoji", "Segoe UI Symbol";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: white;
+    background: var(--bg);
   }
 
   ::selection {
     background: rgb(226 232 240); /* slate-200 */
   }
+}
+
+@layer utilities {
+  .font-serif {
+    font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  }
+}
+
+@keyframes scroll-breathe {
+  0% {
+    transform: translateY(0);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0.55;
+  }
+}
+
+.scroll-indicator {
+  animation: scroll-breathe 1.9s ease-in-out infinite;
 }

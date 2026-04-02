@@ -65,7 +65,7 @@ export function AboutPage() {
 
   return (
     <Page title="About" description="不是干巴巴的简历，是一段更接近“我是谁”的叙述。">
-      <section>
+      <section id="education">
         <h2 className="text-sm font-semibold tracking-wide text-slate-900">学习经历</h2>
         <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-500">
           这部分更像“背景信息”：我学过什么、对什么感兴趣，以及它们如何影响我的工作方式。
@@ -87,7 +87,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="mt-10">
+      <section id="experience" className="mt-10">
         <h2 className="text-sm font-semibold tracking-wide text-slate-900">工作经历（时间轴）</h2>
         <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-500">
           我更愿意用“做成了什么”来描述工作：在真实约束下推进落地，在结果里持续复盘。

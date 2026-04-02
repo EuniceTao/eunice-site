@@ -8,6 +8,7 @@ export * from './Card';
 export * from './Avatar';
 export * from './ImageFrame';
 export * from './Textarea';
+export * from './Surface';
 export * from './Badge';
 export * from './Sheet';
 export * from './ConfirmDialog';

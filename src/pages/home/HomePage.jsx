@@ -1,86 +1,144 @@
 /**
  * @file HomePage.jsx
- * @description 首页：一句话 slogan、自我定位、引导到核心板块。
+ * @description 首页：核心信息总览（教育/工作/联系）+ 跳转到详情。
  */
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ImageFrame, Page } from '../../design-system';
+import { BleedBand, Page, Reveal } from '../../design-system';
+import { EducationSection } from './EducationSection';
+import { HeroSection } from './HeroSection';
+import { ProjectPreviewCard } from './ProjectPreviewCard';
+import { WorkSection } from './WorkSection';
+import { projects } from '../projects/projectsData';
 
 export function HomePage() {
-  const slogan = '把复杂的事，做成简单又有温度的体验。'; // slogan
-  const positioning = '我做产品、内容与增长相关的事，关注用户洞察、叙事与长期主义。'; // 定位
-
-  const cards = [
-    { title: '关于我 / About', desc: '一些经历、价值观，以及让我成为“我”的细节。', to: '/about' },
-    { title: '工作 / Work', desc: '项目背景 → 我的角色 → 结果与复盘（尽量可量化）。', to: '/projects' },
-    { title: '笔记 / Notes', desc: '产品思考、行业观察，也记录折腾与生活。', to: '/blog' },
-    { title: '此刻 / Now', desc: '此刻我在做什么，最近在关注什么（更像一封小信）。', to: '/now' },
-  ];
+  const projectsPreview = projects.slice(0, 3);
 
   return (
     <Page
-      title="Hi, I’m Eunice."
-      description="这里是我把想法写下来、把作品整理好、把生活留下来的地方。"
+      className="pt-8 md:pt-10"
     >
-      <section className="rounded-2xl border border-slate-200 bg-white p-7 md:p-10">
-        <div className="grid gap-8 md:grid-cols-[1fr_260px] md:items-stretch">
-          <div className="flex flex-col">
-            <div>
-              <p className="text-xl md:text-2xl font-light leading-relaxed text-slate-900">
-                {slogan}
+      <Reveal>
+        <HeroSection />
+      </Reveal>
+
+      <div id="content" className="h-1" />
+
+      <Reveal delay={0.05}>
+        <EducationSection />
+      </Reveal>
+
+      <Reveal delay={0.08}>
+        <WorkSection />
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <BleedBand
+          as="section"
+          className="mt-10 bg-slate-100/80 py-10 md:mt-14 md:py-16"
+        >
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div className="max-w-2xl">
+              <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-slate-500">
+                Projects
               </p>
-              <p className="mt-4 max-w-prose text-base leading-relaxed text-slate-500">
-                {positioning}
+              <h2 className="mt-2 text-xl font-semibold tracking-tight text-slate-900 md:text-2xl">
+                项目 / Projects
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                先看结果，再看过程。点进项目页会有更完整的背景与复盘。
               </p>
             </div>
+            <Link
+              to="/projects"
+              className="text-sm font-medium text-slate-600 underline-offset-4 transition-colors hover:text-slate-900 hover:underline"
+            >
+              查看全部 →
+            </Link>
+          </div>
 
-            <div className="mt-8 md:mt-auto flex flex-wrap items-center gap-3">
+          <div className="mt-10 grid gap-0 md:grid-cols-3 md:divide-x md:divide-slate-300/50">
+            {projectsPreview.map((p, idx) => (
+              <ProjectPreviewCard key={p.id} project={p} index={idx} />
+            ))}
+          </div>
+        </BleedBand>
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <section className="mt-10 md:mt-14">
+          <div className="bg-slate-200/50">
+            <div className="grid divide-y divide-slate-300/60 md:grid-cols-2 md:divide-x md:divide-y-0">
               <Link
-                to="/contact"
-                className="inline-flex items-center rounded-full bg-slate-900 px-4 py-2 text-sm text-white hover:bg-slate-800 transition-colors"
+                to="/blog"
+                className="group block px-5 py-8 transition-colors hover:bg-white/60 md:px-8 md:py-10"
               >
-                找我聊聊
+                <div className="flex items-center justify-between gap-4">
+                  <h2 className="text-base font-semibold text-slate-900">笔记 / Notes</h2>
+                  <span className="text-slate-500 transition-colors group-hover:text-slate-900">
+                    →
+                  </span>
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  产品思考、行业观察，也记录折腾与生活。
+                </p>
               </Link>
+
               <Link
-                to="/projects"
-                className="inline-flex items-center rounded-full border border-slate-200 px-4 py-2 text-sm text-slate-700 hover:border-slate-300 hover:text-slate-900 transition-colors"
+                to="/now"
+                className="group block px-5 py-8 transition-colors hover:bg-white/60 md:px-8 md:py-10"
               >
-                看看作品 →
+                <div className="flex items-center justify-between gap-4">
+                  <h2 className="text-base font-semibold text-slate-900">此刻 / Now</h2>
+                  <span className="text-slate-500 transition-colors group-hover:text-slate-900">
+                    →
+                  </span>
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                  此刻我在做什么，最近在关注什么（更像一封小信）。
+                </p>
               </Link>
             </div>
           </div>
+        </section>
+      </Reveal>
 
-          <div className="flex md:justify-end md:self-end">
-            <ImageFrame className="w-full max-w-[260px]">
-              <img
-                src="/profile.png"
-                alt="Eunice portrait"
-                className="aspect-[3/4] w-full object-cover"
-                loading="eager"
-              />
-            </ImageFrame>
-          </div>
-        </div>
-      </section>
-
-      <section className="mt-10 grid gap-4 md:grid-cols-2">
-        {cards.map((c) => (
-          <Link
-            key={c.to}
-            to={c.to}
-            className="group rounded-2xl border border-slate-200 bg-white p-6 hover:border-slate-300 transition-colors"
-          >
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-medium text-slate-900">{c.title}</h2>
-              <span className="text-slate-300 group-hover:text-slate-400 transition-colors">
-                →
-              </span>
+      <Reveal delay={0.05}>
+        <section className="mt-10 md:mt-14">
+          <div className="bg-slate-900 px-5 py-10 text-slate-300 md:px-8 md:py-12">
+            <div className="flex flex-wrap items-start justify-between gap-6">
+              <div className="max-w-prose">
+                <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-slate-500">
+                  Contact
+                </p>
+                <h2 className="mt-2 text-lg font-semibold text-white">联系我 / Contact</h2>
+                <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                  如果你想合作、咨询，或者只是想聊聊，都欢迎给我留言。
+                </p>
+                <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-400">
+                  <a
+                    href="mailto:taoyuan_china@163.com"
+                    className="underline decoration-white/25 underline-offset-4 transition-colors hover:text-white hover:decoration-white/60"
+                  >
+                    taoyuan_china@163.com
+                  </a>
+                  <span className="text-slate-600">·</span>
+                  <span>WeChat: Tyuan1216</span>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center rounded-full bg-white px-4 py-2 text-sm font-medium text-slate-950 transition-colors hover:bg-slate-200"
+                >
+                  去留言 →
+                </Link>
+              </div>
             </div>
-            <p className="mt-2 text-sm leading-relaxed text-slate-500">{c.desc}</p>
-          </Link>
-        ))}
-      </section>
+          </div>
+        </section>
+      </Reveal>
     </Page>
   );
 }

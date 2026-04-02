@@ -7,6 +7,14 @@ import React from 'react';
 import { Page } from '../../design-system';
 import { projects } from './projectsData';
 
+function toBullets(text) {
+  if (!text) return [];
+  return String(text)
+    .split(/(?:\r?\n|；|。)\s*/g)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 function Tag({ children }) {
   return (
     <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600">
@@ -21,7 +29,7 @@ export function ProjectsPage() {
       title="Work"
       description="先给你一个可扫读的版本：每个项目先看一句结果，展开再看背景与过程。"
     >
-      <div className="space-y-3">
+      <div className="space-y-4">
         {projects.map((p) => (
           <details
             key={p.id}
@@ -33,16 +41,23 @@ export function ProjectsPage() {
                   <h2 className="text-base md:text-lg font-medium text-slate-900">
                     {p.title}
                   </h2>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                    <span className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                  <div className="mt-3 rounded-xl bg-slate-50 px-4 py-3">
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
                       Outcome
-                    </span>
-                    <span className="ml-2">{p.outcome}</span>
-                  </p>
+                    </p>
+                    <ul className="mt-2 space-y-2 text-sm leading-relaxed text-slate-700">
+                      {toBullets(p.outcome).map((b) => (
+                        <li key={b} className="flex gap-3">
+                          <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-300" />
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
 
                 <div className="shrink-0 flex items-center gap-3">
-                  <span className="text-xs uppercase tracking-widest text-slate-400">
+                  <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600">
                     {p.period}
                   </span>
                   <span className="text-slate-300 group-open:rotate-90 transition-transform">
@@ -58,24 +73,36 @@ export function ProjectsPage() {
               </div>
             </summary>
 
-            <div className="mt-6 border-t border-slate-100 pt-6 space-y-5">
-              <section>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-                  Background
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                  {p.background}
-                </p>
-              </section>
+            <div className="mt-6 border-t border-slate-100 pt-6">
+              <div className="grid gap-4 md:grid-cols-2">
+                <section className="rounded-2xl border border-slate-200 bg-white p-5">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                    Background
+                  </p>
+                  <ul className="mt-3 space-y-2 text-sm leading-relaxed text-slate-700">
+                    {toBullets(p.background).map((b) => (
+                      <li key={b} className="flex gap-3">
+                        <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-300" />
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
 
-              <section>
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-                  My role
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                  {p.role}
-                </p>
-              </section>
+                <section className="rounded-2xl border border-slate-200 bg-white p-5">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                    My role
+                  </p>
+                  <ul className="mt-3 space-y-2 text-sm leading-relaxed text-slate-700">
+                    {toBullets(p.role).map((b) => (
+                      <li key={b} className="flex gap-3">
+                        <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-300" />
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              </div>
             </div>
           </details>
         ))}

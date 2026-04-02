@@ -11,7 +11,7 @@ import { Container } from './Container';
 const navItems = [
   { to: '/', label: 'Home' }, // 首页
   { to: '/about', label: 'About' }, // 关于
-  { to: '/projects', label: 'Work' }, // 作品
+  { to: '/work', label: 'Work' }, // 作品
   { to: '/blog', label: 'Blog' }, // 博客
   { to: '/now', label: 'Now' }, // 此刻
   { to: '/contact', label: 'Contact' }, // 联系

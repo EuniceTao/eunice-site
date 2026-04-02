@@ -6,5 +6,6 @@
 
 export * from './components';
 export * from './layout';
+export * from './motion';
 export * from './tokens';
 export * from './hooks/useMediaQuery';

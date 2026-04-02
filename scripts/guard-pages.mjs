@@ -15,10 +15,18 @@ const CACHE_DIR = path.join(ROOT, '.guard-cache', 'pages'); // 缓存目录
  */
 const GUARDED_FILES = [
   'src/pages/home/HomePage.jsx',
+  'src/pages/home/EducationSection.jsx',
+  'src/pages/home/educationData.js',
+  'src/pages/home/HeroSection.jsx',
+  'src/pages/home/WorkSection.jsx',
+  'src/pages/home/ProjectPreviewCard.jsx',
   'src/pages/about/AboutPage.jsx',
   'src/pages/now/NowPage.jsx',
   'src/pages/projects/ProjectsPage.jsx',
   'src/pages/projects/projectsData.js',
+  'src/pages/work/WorkIndexPage.jsx',
+  'src/pages/work/WorkDetailPage.jsx',
+  'src/pages/work/workData.js',
 ];
 
 function ensureDir(dirPath) {
