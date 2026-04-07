@@ -4,13 +4,14 @@
  */
 
 import React from 'react';
+import { publicUrl } from '../../lib/publicUrl';
 
 const FILM_PHOTOS = [
-  '/hero-7.jpg',
-  '/hero-6.jpg',
-  '/hero-1.jpg',
-  '/hero-5.jpg',
-  '/hero-2.png',
+  publicUrl('hero-7.jpg'),
+  publicUrl('hero-6.jpg'),
+  publicUrl('hero-1.jpg'),
+  publicUrl('hero-5.jpg'),
+  publicUrl('hero-2.png'),
 ];
 
 /** 每张停留时长（ms），偏慢、一张换一张 */

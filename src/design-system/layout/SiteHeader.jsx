@@ -7,6 +7,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '../utils/cn';
 import { Container } from './Container';
+import { publicUrl } from '../../lib/publicUrl';
 
 const navItems = [
   { to: '/', label: 'Home' }, // 首页
@@ -52,7 +53,7 @@ export function SiteHeader({ brand = 'Eunice' }) {
 
         <div className="flex items-center gap-6">
           <a
-            href="/resume.pdf"
+            href={publicUrl('resume.pdf')}
             className="font-mono text-[12px] uppercase tracking-[0.15em] text-[color:var(--text-muted)] transition-colors duration-300 hover:text-[color:var(--text)]"
           >
             下载简历
