@@ -17,8 +17,10 @@ import { BlogIndexPage } from './pages/blog/BlogIndexPage';
 import { BlogPostPage } from './pages/blog/BlogPostPage';
 import { NowPage } from './pages/now/NowPage';
 import { AdminLoginPage } from './pages/admin/AdminLoginPage';
+import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 import { AdminNowPage } from './pages/admin/AdminNowPage';
 import { AdminNotesPage } from './pages/admin/AdminNotesPage';
+import { AdminHomeEditorPage } from './pages/admin/AdminHomeEditorPage';
 import { ContactPage } from './pages/contact/ContactPage';
 import { NotFoundPage } from './pages/not-found/NotFoundPage';
 
@@ -37,8 +39,11 @@ function App() {
           <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/now" element={<NowPage />} />
           <Route path="/admin" element={<AdminLoginPage />} />
+          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+          <Route path="/admin/home" element={<AdminHomeEditorPage />} />
           <Route path="/admin/now" element={<AdminNowPage />} />
           <Route path="/admin/notes" element={<AdminNotesPage />} />
+          {/* Experience 编辑页下一步接入 */}
           <Route path="/contact" element={<ContactPage />} />
         </Route>
 

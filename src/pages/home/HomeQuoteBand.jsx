@@ -4,8 +4,18 @@
  */
 
 import React from 'react';
+import { useSiteBlock } from '../site-blocks/useSiteBlock';
 
 export function HomeQuoteBand() {
+  const { content } = useSiteBlock('home.quote', {
+    fallback: {
+      text:
+        '当一个人能够如此单纯，如此觉醒，如此专注于当下，毫无疑虑地走过这个世界，生命真是一件赏心乐事。',
+      author: '—— 黑塞 《悉达多》',
+      authorEn: '(by - Hermann Hesse)',
+    },
+  });
+
   return (
     <section
       className="border-t border-b border-[color:var(--border)] bg-[color:var(--bg)] py-12 md:py-16"
@@ -14,12 +24,12 @@ export function HomeQuoteBand() {
       <div className="mx-auto w-full max-w-[1100px] px-4 md:px-8">
         <blockquote className="font-display text-[color:var(--text)]">
           <p className="text-left text-[18px] leading-[1.75] text-[color:var(--text)] md:text-[20px]">
-            当一个人能够如此单纯，如此觉醒，如此专注于当下，毫无疑虑地走过这个世界，生命真是一件赏心乐事。
+            {content?.text}
           </p>
           <footer className="mt-4 flex justify-end">
             <p className="max-w-full text-right font-mono text-[11px] uppercase tracking-[0.15em] text-[color:var(--text-muted)]">
-              —— 黑塞 《悉达多》{' '}
-              <span className="text-[color:var(--text-light)]">(by - Hermann Hesse)</span>
+              {content?.author}{' '}
+              <span className="text-[color:var(--text-light)]">{content?.authorEn}</span>
             </p>
           </footer>
         </blockquote>

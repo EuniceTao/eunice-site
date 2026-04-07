@@ -24,7 +24,7 @@ export function AdminLoginPage() {
   );
 
   useEffect(() => {
-    if (!loading && session) navigate('/admin/now', { replace: true });
+    if (!loading && session) navigate('/admin/dashboard', { replace: true });
   }, [loading, session, navigate]);
 
   return (
@@ -54,7 +54,7 @@ export function AdminLoginPage() {
                 password,
               });
               if (error) throw error;
-              navigate('/admin/now', { replace: true });
+              navigate('/admin/dashboard', { replace: true });
             } catch (err) {
               setStatus({
                 type: 'error',

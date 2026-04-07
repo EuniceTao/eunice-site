@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Input, Page, Textarea } from '../../design-system';
 import { supabase } from '../../lib/supabaseClient';
 import { useAdminSession } from './useAdminSession';
+import { AdminShell } from './AdminShell';
 
 function slugify(value) {
   return String(value || '')
@@ -181,6 +182,7 @@ export function AdminNotesPage() {
 
   return (
     <Page title="Admin · Notes" description="管理笔记（Markdown）。发布后前台 /blog 自动更新。">
+      <AdminShell>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3">
           <Button onClick={startNew} disabled={!supabase || fetching}>
@@ -188,24 +190,6 @@ export function AdminNotesPage() {
           </Button>
           <Button variant="outline" onClick={refresh} disabled={!supabase || fetching}>
             {fetching ? '刷新中…' : '刷新'}
-          </Button>
-          <Button variant="outline" onClick={() => navigate('/admin/now')}>
-            去 Now →
-          </Button>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[color:var(--text-light)]">
-            {user?.email || ''}
-          </span>
-          <Button
-            variant="outline"
-            onClick={async () => {
-              await signOut();
-              navigate('/admin', { replace: true });
-            }}
-          >
-            退出
           </Button>
         </div>
       </div>
@@ -378,6 +362,7 @@ export function AdminNotesPage() {
           </div>
         </aside>
       </div>
+      </AdminShell>
     </Page>
   );
 }

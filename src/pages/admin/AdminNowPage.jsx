@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Input, Page, Textarea } from '../../design-system';
 import { supabase } from '../../lib/supabaseClient';
 import { useAdminSession } from './useAdminSession';
+import { AdminShell } from './AdminShell';
 
 function toTextAreaValue(body) {
   return Array.isArray(body) ? body.filter(Boolean).join('\n') : '';
@@ -176,6 +177,7 @@ export function AdminNowPage() {
 
   return (
     <Page title="Admin · Now" description="管理你的 Now 日记：发布后首页与 Now 页会自动更新。">
+      <AdminShell>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3">
           <Button onClick={startNew} disabled={!supabase || fetching}>
@@ -184,25 +186,8 @@ export function AdminNowPage() {
           <Button variant="outline" onClick={refresh} disabled={!supabase || fetching}>
             {fetching ? '刷新中…' : '刷新'}
           </Button>
-          <Button variant="outline" onClick={() => navigate('/admin/notes')}>
-            去 Notes →
-          </Button>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[color:var(--text-light)]">
-            {user?.email || ''}
-          </span>
-          <Button
-            variant="outline"
-            onClick={async () => {
-              await signOut();
-              navigate('/admin', { replace: true });
-            }}
-          >
-            退出
-          </Button>
-        </div>
       </div>
 
       {status?.message ? (
@@ -378,6 +363,7 @@ export function AdminNowPage() {
           </div>
         </aside>
       </div>
+      </AdminShell>
     </Page>
   );
 }

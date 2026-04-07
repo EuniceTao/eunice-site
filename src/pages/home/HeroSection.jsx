@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { publicUrl } from '../../lib/publicUrl';
+import { useSiteBlock } from '../site-blocks/useSiteBlock';
 
 const FILM_PHOTOS = [
   publicUrl('hero-7.jpg'),
@@ -19,25 +20,53 @@ const SLIDE_INTERVAL_MS = 9000;
 const FADE_MS = 1200;
 
 export function HeroSection() {
+  const { content: heroBlock } = useSiteBlock('home.hero', {
+    fallback: {
+      nameLine: '我是陶源「Eunice」',
+      roles: ['AI PM', '心理咨询师', '探索世界的 ENFP'],
+      hobbies: '唱歌、旅行、古筝、剧本杀、拳击 成就解锁中... ...',
+      photos: FILM_PHOTOS,
+    },
+  });
+
+  const photos = React.useMemo(() => {
+    const raw = Array.isArray(heroBlock?.photos) ? heroBlock.photos : null;
+    const list = raw && raw.length > 0 ? raw : FILM_PHOTOS;
+    return list.map((p) => {
+      const s = String(p || '').trim();
+      if (!s) return '';
+      // 文件名/相对路径 → publicUrl；绝对 URL 原样
+      if (s.startsWith('http://') || s.startsWith('https://')) return s;
+      return publicUrl(s);
+    }).filter(Boolean);
+  }, [heroBlock?.photos]);
+
   const [active, setActive] = React.useState(0);
   const [prev, setPrev] = React.useState(null);
   const [isFading, setIsFading] = React.useState(false);
   const [broken, setBroken] = React.useState(() => new Set());
 
-  const activeSrc = FILM_PHOTOS[active];
-  const nextSrc = FILM_PHOTOS[(active + 1) % FILM_PHOTOS.length];
+  React.useEffect(() => {
+    // 数据源变更时，重置轮播状态，避免索引越界
+    setActive(0);
+    setPrev(null);
+    setIsFading(false);
+    setBroken(new Set());
+  }, [photos.join('|')]);
+
+  const activeSrc = photos[active];
 
   const nextIndex = React.useMemo(() => {
     // 找到下一个“未坏掉”的索引，避免循环滚到空白
-    if (!broken?.size) return (active + 1) % FILM_PHOTOS.length;
-    for (let step = 1; step <= FILM_PHOTOS.length; step += 1) {
-      const idx = (active + step) % FILM_PHOTOS.length;
-      if (!broken.has(FILM_PHOTOS[idx])) return idx;
+    if (!broken?.size) return (active + 1) % photos.length;
+    for (let step = 1; step <= photos.length; step += 1) {
+      const idx = (active + step) % photos.length;
+      if (!broken.has(photos[idx])) return idx;
     }
-    return (active + 1) % FILM_PHOTOS.length;
-  }, [active, broken]);
+    return (active + 1) % photos.length;
+  }, [active, broken, photos]);
 
-  const safeNextSrc = FILM_PHOTOS[nextIndex];
+  const safeNextSrc = photos[nextIndex];
 
   const markBroken = React.useCallback((src) => {
     setBroken((prevSet) => {
@@ -116,7 +145,7 @@ export function HeroSection() {
                 className="mt-4 block md:mt-5"
                 style={{ fontSize: '0.78em', whiteSpace: 'nowrap' }}
               >
-                我是陶源「Eunice」
+                {heroBlock?.nameLine || '我是陶源「Eunice」'}
               </span>
             </h1>
             <div
@@ -124,16 +153,17 @@ export function HeroSection() {
               style={{ animationDelay: '0.15s' }}
             >
               <div className="flex max-w-[42rem] flex-wrap items-center justify-center">
-                <span>AI PM</span>
-                <span className="px-3">|</span>
-                <span>心理咨询师</span>
-                <span className="px-3">|</span>
-                <span>探索世界的 ENFP</span>
+                {(heroBlock?.roles || ['AI PM', '心理咨询师', '探索世界的 ENFP']).map((r, idx, arr) => (
+                  <React.Fragment key={r}>
+                    <span>{r}</span>
+                    {idx < arr.length - 1 ? <span className="px-3">|</span> : null}
+                  </React.Fragment>
+                ))}
               </div>
 
               <div className="mt-3 w-full max-w-[42rem]">
                 <span className="block whitespace-normal md:whitespace-nowrap">
-                  唱歌、旅行、古筝、剧本杀、拳击 成就解锁中... ...
+                  {heroBlock?.hobbies || '唱歌、旅行、古筝、剧本杀、拳击 成就解锁中... ...'}
                 </span>
               </div>
             </div>
