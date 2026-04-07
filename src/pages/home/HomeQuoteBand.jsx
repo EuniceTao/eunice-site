@@ -26,10 +26,6 @@ export function HomeQuoteBand() {
 
         <div className="relative mt-8 w-full md:mt-10">
           <div className="mx-auto flex w-full max-w-md flex-col items-center gap-5">
-            <div className="flex w-full items-center gap-4" aria-hidden>
-              <span className="h-1.5 w-14 shrink-0 rounded-sm bg-[color:var(--text)] md:w-20" />
-              <span className="h-px flex-1 bg-[color:var(--border)]" />
-            </div>
             <a
               href="#content"
               className="scroll-indicator inline-flex items-center justify-center font-mono text-[12px] text-[color:var(--text-light)] transition-colors hover:text-[color:var(--text)]"
