@@ -1,6 +1,6 @@
 /**
  * @file SiteHeader.jsx
- * @description 站点顶部导航：极简、可读性强、移动端友好。
+ * @description 顶部导航：黑白灰极简（白底+底边线），以字重/字号作为唯一强调。
  */
 
 import React from 'react';
@@ -10,22 +10,20 @@ import { Container } from './Container';
 
 const navItems = [
   { to: '/', label: 'Home' }, // 首页
-  { to: '/about', label: 'About' }, // 关于
-  { to: '/projects', label: 'Work' }, // 作品
-  { to: '/blog', label: 'Blog' }, // 博客
-  { to: '/now', label: 'Now' }, // 此刻
+  { to: '/experience', label: 'Experience' }, // 经验
+  { to: '/blog', label: 'More' }, // 关于我区块入口（笔记等）
   { to: '/contact', label: 'Contact' }, // 联系
 ];
 
 function SiteNavLink({ to, children }) {
   const baseClassName =
-    'text-sm tracking-wide text-slate-500 hover:text-slate-900 transition-colors'; // 基础样式
+    'font-mono text-[12px] uppercase tracking-[0.15em] text-[color:var(--text-muted)] transition-colors duration-300 hover:text-[color:var(--text)]';
 
   return (
     <NavLink
       to={to}
       className={({ isActive }) =>
-        cn(baseClassName, isActive && 'text-slate-900')
+        cn(baseClassName, isActive && 'text-[color:var(--text)]')
       }
     >
       {children}
@@ -35,16 +33,16 @@ function SiteNavLink({ to, children }) {
 
 export function SiteHeader({ brand = 'Eunice' }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur-md">
-      <Container className="flex items-center justify-between py-4">
-        <div className="flex items-baseline gap-3">
-          <NavLink to="/" className="text-sm font-semibold text-slate-900">
-            {brand}
-          </NavLink>
-          <span className="text-xs text-slate-400">personal site</span>
-        </div>
+    <header className="sticky top-0 z-40 bg-[color:var(--bg)] border-b border-[color:var(--border)]">
+      <Container className="flex items-center justify-between py-5">
+        <NavLink
+          to="/"
+          className="font-display text-[18px] leading-none font-light text-[color:var(--text)]"
+        >
+          {brand}
+        </NavLink>
 
-        <nav className="hidden items-center gap-5 md:flex">
+        <nav className="hidden items-center gap-8 md:flex">
           {navItems.map((item) => (
             <SiteNavLink key={item.to} to={item.to}>
               {item.label}
@@ -52,12 +50,20 @@ export function SiteHeader({ brand = 'Eunice' }) {
           ))}
         </nav>
 
-        <NavLink
-          to="/contact"
-          className="md:hidden text-xs tracking-widest uppercase text-slate-500 hover:text-slate-900 transition-colors"
-        >
-          Contact →
-        </NavLink>
+        <div className="flex items-center gap-6">
+          <a
+            href="/resume.pdf"
+            className="font-mono text-[12px] uppercase tracking-[0.15em] text-[color:var(--text-muted)] transition-colors duration-300 hover:text-[color:var(--text)]"
+          >
+            下载简历
+          </a>
+          <NavLink
+            to="/contact"
+            className="md:hidden font-mono text-[12px] uppercase tracking-[0.15em] text-[color:var(--text-muted)] transition-colors duration-300 hover:text-[color:var(--text)]"
+          >
+            Contact
+          </NavLink>
+        </div>
       </Container>
     </header>
   );

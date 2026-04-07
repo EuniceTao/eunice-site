@@ -1,86 +1,137 @@
 /**
  * @file HomePage.jsx
- * @description 首页：一句话 slogan、自我定位、引导到核心板块。
+ * @description 首页：核心信息总览（教育/工作/联系）+ 跳转到详情。
  */
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ImageFrame, Page } from '../../design-system';
+import { Page, ScrollReveal } from '../../design-system';
+import { HeroSection } from './HeroSection';
+import { HomeQuoteBand } from './HomeQuoteBand';
+import { ExperienceSection } from './ExperienceSection';
+import { MoreAboutMeSection } from './MoreAboutMeSection';
+import { projects } from '../projects/projectsData';
 
 export function HomePage() {
-  const slogan = '把复杂的事，做成简单又有温度的体验。'; // slogan
-  const positioning = '我做产品、内容与增长相关的事，关注用户洞察、叙事与长期主义。'; // 定位
-
-  const cards = [
-    { title: '关于我 / About', desc: '一些经历、价值观，以及让我成为“我”的细节。', to: '/about' },
-    { title: '工作 / Work', desc: '项目背景 → 我的角色 → 结果与复盘（尽量可量化）。', to: '/projects' },
-    { title: '笔记 / Notes', desc: '产品思考、行业观察，也记录折腾与生活。', to: '/blog' },
-    { title: '此刻 / Now', desc: '此刻我在做什么，最近在关注什么（更像一封小信）。', to: '/now' },
-  ];
+  const projectsPreview = projects.slice(0, 3);
 
   return (
     <Page
-      title="Hi, I’m Eunice."
-      description="这里是我把想法写下来、把作品整理好、把生活留下来的地方。"
+      className="pt-8 md:pt-10"
     >
-      <section className="rounded-2xl border border-slate-200 bg-white p-7 md:p-10">
-        <div className="grid gap-8 md:grid-cols-[1fr_260px] md:items-stretch">
-          <div className="flex flex-col">
-            <div>
-              <p className="text-xl md:text-2xl font-light leading-relaxed text-slate-900">
-                {slogan}
-              </p>
-              <p className="mt-4 max-w-prose text-base leading-relaxed text-slate-500">
-                {positioning}
-              </p>
-            </div>
+      <ScrollReveal>
+        <HeroSection />
+      </ScrollReveal>
 
-            <div className="mt-8 md:mt-auto flex flex-wrap items-center gap-3">
-              <Link
-                to="/contact"
-                className="inline-flex items-center rounded-full bg-slate-900 px-4 py-2 text-sm text-white hover:bg-slate-800 transition-colors"
-              >
-                找我聊聊
-              </Link>
-              <Link
-                to="/projects"
-                className="inline-flex items-center rounded-full border border-slate-200 px-4 py-2 text-sm text-slate-700 hover:border-slate-300 hover:text-slate-900 transition-colors"
-              >
-                看看作品 →
-              </Link>
-            </div>
-          </div>
+      <ScrollReveal>
+        <HomeQuoteBand />
+      </ScrollReveal>
 
-          <div className="flex md:justify-end md:self-end">
-            <ImageFrame className="w-full max-w-[260px]">
-              <img
-                src="/profile.png"
-                alt="Eunice portrait"
-                className="aspect-[3/4] w-full object-cover"
-                loading="eager"
-              />
-            </ImageFrame>
-          </div>
-        </div>
-      </section>
+      <div id="content" className="h-1" />
 
-      <section className="mt-10 grid gap-4 md:grid-cols-2">
-        {cards.map((c) => (
-          <Link
-            key={c.to}
-            to={c.to}
-            className="group rounded-2xl border border-slate-200 bg-white p-6 hover:border-slate-300 transition-colors"
+      <ScrollReveal>
+        <section className="border-t border-[color:var(--border)] py-[72px]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#999999] mb-3">
+            EXPERIENCE
+          </p>
+          <h2
+            className="font-display text-[color:var(--text)] font-light"
+            style={{ fontSize: 'clamp(36px, 5vw, 56px)' }}
           >
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-medium text-slate-900">{c.title}</h2>
-              <span className="text-slate-300 group-hover:text-slate-400 transition-colors">
-                →
-              </span>
+            经验
+          </h2>
+
+          <div className="mt-9">
+            <ExperienceSection projectsPreview={projectsPreview} />
+          </div>
+        </section>
+      </ScrollReveal>
+
+      <ScrollReveal>
+        <section className="border-t border-[color:var(--border)] py-[72px]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#999999] mb-3">
+            MORE
+          </p>
+          <h2
+            className="font-display text-[color:var(--text)] font-light"
+            style={{ fontSize: 'clamp(36px, 5vw, 56px)' }}
+          >
+            关于我
+          </h2>
+
+          <div className="mt-9">
+            <MoreAboutMeSection />
+          </div>
+        </section>
+      </ScrollReveal>
+
+      <ScrollReveal>
+        <section className="border-t border-[color:var(--border)] py-[72px]">
+          <div className="relative ml-[calc(50%-50vw)] mr-[calc(50%-50vw)] w-screen max-w-[100vw] bg-[#111111]">
+            <div className="mx-auto w-full max-w-[1100px] px-6 py-20 md:px-12">
+              <div className="flex flex-wrap items-start justify-between gap-8">
+              <div className="min-w-0 max-w-none flex-1">
+                <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#999999] mb-3">
+                  CONTACT
+                </p>
+                <h2 className="font-display font-light text-white" style={{ fontSize: 'clamp(32px, 5vw, 48px)' }}>
+                  联系我
+                </h2>
+                <p className="mt-4 max-w-prose text-[14px] leading-[1.8] font-light text-[#BBBBBB]">
+                  如果你想合作、咨询，或者只是想聊聊，都欢迎给我留言。
+                </p>
+                <div className="mt-6 space-y-8">
+                  <dl className="grid grid-cols-1 gap-x-8 gap-y-4 font-mono text-[13px] text-[#BBBBBB] sm:grid-cols-2 sm:gap-y-3">
+                    <div className="grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-[5.5rem_1fr] sm:items-baseline">
+                      <dt className="text-[11px] uppercase tracking-[0.12em] text-[#888888]">邮箱</dt>
+                      <dd className="min-w-0">
+                        <a
+                          href="mailto:taoyuan_china@163.com"
+                          className="underline decoration-white/25 underline-offset-4 transition-colors hover:text-white hover:decoration-white/60"
+                        >
+                          taoyuan_china@163.com
+                        </a>
+                      </dd>
+                    </div>
+                    <div className="grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-[5.5rem_1fr] sm:items-baseline">
+                      <dt className="text-[11px] uppercase tracking-[0.12em] text-[#888888]">微信</dt>
+                      <dd className="min-w-0">Tyuan1216</dd>
+                    </div>
+                  </dl>
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#888888]">
+                      社交媒体
+                    </p>
+                    <dl className="mt-3 grid grid-cols-1 gap-6 font-mono text-[13px] text-[#BBBBBB] sm:grid-cols-3 sm:gap-8">
+                      <div className="min-w-0">
+                        <dt className="text-[11px] uppercase tracking-[0.12em] text-[#888888]">小红书</dt>
+                        <dd className="mt-1 break-words">@陶子小姐和她的英镑小朋友</dd>
+                      </div>
+                      <div className="min-w-0">
+                        <dt className="text-[11px] uppercase tracking-[0.12em] text-[#888888]">微博</dt>
+                        <dd className="mt-1">@陶子小姐不吃桃</dd>
+                      </div>
+                      <div className="min-w-0">
+                        <dt className="text-[11px] uppercase tracking-[0.12em] text-[#888888]">抖音</dt>
+                        <dd className="mt-1">@陶子小姐不吃桃</dd>
+                      </div>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+              <div className="flex shrink-0 flex-wrap items-center gap-3">
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center rounded-[4px] border border-white bg-transparent px-4 py-2 text-[13px] text-white transition-colors hover:bg-white hover:text-[#111111]"
+                >
+                  去留言 →
+                </Link>
+              </div>
             </div>
-            <p className="mt-2 text-sm leading-relaxed text-slate-500">{c.desc}</p>
-          </Link>
-        ))}
-      </section>
+            </div>
+          </div>
+        </section>
+      </ScrollReveal>
     </Page>
   );
 }

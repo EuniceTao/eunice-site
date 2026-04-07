@@ -1,17 +1,17 @@
 /**
  * @file SiteLayout.jsx
- * @description 站点通用布局：Header + 内容区 + Footer。
+ * @description 站点通用布局：极简顶部导航 + 内容区 + Footer。
  */
 
 import React from 'react';
-import { Outlet } from 'react-router-dom';
 import { SiteFooter, SiteHeader } from '../design-system';
+import { AnimatedOutlet } from './AnimatedOutlet';
 
 export function SiteLayout() {
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen">
       <SiteHeader brand="Eunice" />
-      <Outlet />
+      <AnimatedOutlet />
       <SiteFooter />
     </div>
   );
