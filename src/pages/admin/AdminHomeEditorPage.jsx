@@ -9,6 +9,7 @@ import { Button, Input, Page, Textarea } from '../../design-system';
 import { useAdminSession } from './useAdminSession';
 import { AdminShell } from './AdminShell';
 import { getSiteBlockRow, publishSiteBlock, saveSiteBlockDraft } from '../site-blocks/siteBlocksApi';
+import { supabase } from '../../lib/supabaseClient';
 
 function parseLines(value) {
   return String(value || '')
@@ -27,6 +28,7 @@ export function AdminHomeEditorPage() {
 
   const [status, setStatus] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const [heroDraft, setHeroDraft] = useState({
     nameLine: '我是陶源「Eunice」',
@@ -108,6 +110,51 @@ export function AdminHomeEditorPage() {
     }
   }
 
+  async function uploadHeroPhotos(files) {
+    if (!supabase) {
+      setStatus({ type: 'error', message: 'Supabase 未配置，无法上传。' });
+      return;
+    }
+    if (!files || files.length === 0) return;
+
+    setStatus(null);
+    setUploading(true);
+    try {
+      const bucket = 'site-assets';
+      const uploadedUrls = [];
+
+      for (const file of Array.from(files)) {
+        const ext = file.name.split('.').pop() || 'jpg';
+        const id = (crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`).replace(/\./g, '');
+        const path = `hero/${new Date().toISOString().slice(0, 10)}/${id}.${ext}`;
+
+        const { error: upErr } = await supabase.storage
+          .from(bucket)
+          .upload(path, file, { upsert: false, cacheControl: '31536000' });
+        if (upErr) throw upErr;
+
+        const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+        if (data?.publicUrl) uploadedUrls.push(data.publicUrl);
+      }
+
+      if (uploadedUrls.length > 0) {
+        setHeroDraft((p) => ({ ...p, photos: [...uploadedUrls, ...(p.photos || [])] }));
+        setStatus({
+          type: 'success',
+          message: `已上传 ${uploadedUrls.length} 张图片，并已加入照片列表（记得保存草稿/发布）。`,
+        });
+      }
+    } catch (err) {
+      setStatus({
+        type: 'error',
+        message:
+          `上传失败：${err?.message ?? '未知错误'}。请确认 Supabase Storage 已创建公开 bucket：site-assets`,
+      });
+    } finally {
+      setUploading(false);
+    }
+  }
+
   return (
     <Page title="Admin · Home" description="编辑首页 Hero 与引用文案（草稿/发布）。">
       <AdminShell>
@@ -131,6 +178,20 @@ export function AdminHomeEditorPage() {
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#999999]">HERO</p>
 
             <div className="mt-6 grid gap-4">
+              <label className="grid gap-2">
+                <span className="text-sm text-slate-600">上传照片（会自动加入列表）</span>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  disabled={uploading}
+                  onChange={(e) => uploadHeroPhotos(e.target.files)}
+                />
+                <span className="text-[12px] leading-[1.7] text-[color:var(--text-muted)]">
+                  需要 Supabase Storage 存储桶：`site-assets`（公开）。上传后记得「保存草稿/发布」。
+                </span>
+              </label>
+
               <label className="grid gap-2">
                 <span className="text-sm text-slate-600">姓名行（Hi 下方那句）</span>
                 <Input
