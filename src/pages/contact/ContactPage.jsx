@@ -36,17 +36,41 @@ export function ContactPage() {
       title="Contact"
       description="如果你有一个项目、一个想法，或者只是想聊聊——都欢迎来找我。"
     >
-      <div className="grid gap-3">
-        <ContactItem
-          label="邮箱 Email"
-          value="taoyuan_china@163.com"
-          href="mailto:taoyuan_china@163.com"
-        />
-        <ContactItem
-          label="微信 WeChat"
-          value="Tyuan1216"
-          href="#"
-        />
+      <div className="space-y-8">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <ContactItem
+            label="邮箱 Email"
+            value="taoyuan_china@163.com"
+            href="mailto:taoyuan_china@163.com"
+          />
+          <ContactItem
+            label="微信 WeChat"
+            value="Tyuan1216"
+            href="#"
+          />
+        </div>
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">
+            社交媒体
+          </p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            <ContactItem
+              label="小红书"
+              value="@陶子小姐和她的英镑小朋友"
+              href="#"
+            />
+            <ContactItem
+              label="微博"
+              value="@陶子小姐不吃桃"
+              href="#"
+            />
+            <ContactItem
+              label="抖音"
+              value="@陶子小姐不吃桃"
+              href="#"
+            />
+          </div>
+        </div>
       </div>
 
       <section className="mt-10 rounded-2xl border border-slate-200 bg-white p-7">

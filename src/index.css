@@ -2,18 +2,25 @@
  * @file index.css
  * @description Global styles, importing TailwindCSS v4.
  */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=IBM+Plex+Mono:wght@300;400&family=Instrument+Sans:wght@300;400&display=swap');
 @import "tailwindcss";
 
 @layer base {
   :root {
-    color-scheme: light; /* 明亮模式 */ 
-    --bg: #F3F5F9; /* 参考图的柔和浅灰底 */
-    --surface: #FFFFFF; /* 卡片表面 */
-    --surface-soft: rgba(255, 255, 255, 0.7); /* 玻璃感/轻柔 */
-    --border: rgba(2, 6, 23, 0.08); /* 比 slate-200 更克制 */
-    --shadow-soft: 0 10px 30px rgba(2, 6, 23, 0.06);
-    --shadow-lift: 0 18px 60px rgba(2, 6, 23, 0.10);
-    --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -1px 0 rgba(2, 6, 23, 0.04);
+    color-scheme: light;
+    --bg: #FFFFFF;
+    --surface: #F7F7F7;
+    --text: #111111;
+    --text-muted: #888888;
+    --text-light: #BBBBBB;
+    --border: #EEEEEE;
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --font-body: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    --transition: 0.4s ease;
+    /* Hero 左栏：固定高度，换显示器时裁切不再跟着变；宽度仍为 50vw */
+    --hero-height-mobile: 260px;
+    --hero-height-desktop: 420px;
   }
 
   html,
@@ -22,40 +29,145 @@
   }
 
   body {
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-      Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
-      "Segoe UI Emoji", "Segoe UI Symbol";
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 300;
+    letter-spacing: -0.01em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: var(--bg);
   }
 
   ::selection {
-    background: rgb(226 232 240); /* slate-200 */
+    background: #EDEDED;
+  }
+
+  a {
+    color: inherit;
+    text-decoration-color: var(--border);
+    text-underline-offset: 0.25em;
   }
 }
 
 @layer utilities {
-  .font-serif {
-    font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  }
+  .font-display { font-family: var(--font-display); }
+  .font-mono { font-family: var(--font-mono); }
+  .font-body { font-family: var(--font-body); }
+  .text-muted { color: var(--text-muted); }
+  .text-light { color: var(--text-light); }
+  .border-subtle { border-color: var(--border); }
 }
 
-@keyframes scroll-breathe {
-  0% {
-    transform: translateY(0);
-    opacity: 0.55;
-  }
-  50% {
-    transform: translateY(6px);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 0.55;
-  }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.scroll-indicator {
-  animation: scroll-breathe 1.9s ease-in-out infinite;
+.fade-up {
+  opacity: 0;
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.film-strip {
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 48px;
+}
+
+.film-track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: filmScroll 30s linear infinite;
+}
+
+.film-track img {
+  height: 220px;
+  width: auto;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(20%);
+  flex-shrink: 0;
+}
+
+@keyframes filmScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.film-strip:hover .film-track {
+  animation-play-state: paused;
+}
+
+/*
+ * Hero：左图叠化；桌面左/右同高 = --hero-height-desktop（可调）。
+ * 出图建议（按 cover）：宽 ≥1200px、高 ≥ var(--hero-height-desktop)，
+ * 主体大致落在横向居中；1920 宽屏下单列宽约 960px，可按 1200×420 或 2400×840(@2x) 统一导出。
+ */
+.hero-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: auto;
+}
+
+.hero-film-split {
+  position: relative;
+  overflow: hidden;
+  height: var(--hero-height-mobile);
+}
+
+.hero-slide-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  filter: grayscale(15%);
+  pointer-events: none;
+}
+
+.hero-slide-img--active {
+  z-index: 1;
+  opacity: 1;
+}
+
+.hero-text-panel {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 2rem 1.25rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .hero-split {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: var(--hero-height-desktop);
+    align-items: stretch;
+  }
+
+  .hero-film-split {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .hero-text-panel {
+    height: 100%;
+    padding: 2rem 1.75rem;
+  }
 }

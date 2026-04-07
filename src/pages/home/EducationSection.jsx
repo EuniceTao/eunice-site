@@ -1,10 +1,9 @@
 /**
  * @file EducationSection.jsx
- * @description 首页学习经历：全宽区域 + 线条分隔（去除“卡片感”）；悬停/聚焦展开主修课程。
+ * @description 首页学习经历：两列信息（中间竖线分隔），时间左对齐置于学校名下方；悬停/聚焦展开课程。
  */
 
 import React from 'react';
-import { BleedBand } from '../../design-system';
 import { educationEntries } from './educationData';
 
 function DetailBlock({ courses, honors }) {
@@ -26,63 +25,50 @@ function DetailBlock({ courses, honors }) {
 
 export function EducationSection() {
   return (
-    <BleedBand
-      as="section"
-      className="mt-12 bg-slate-200/55 py-10 md:mt-14 md:py-16"
-    >
-      <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-slate-500">
-        Education
-      </p>
-      <h2 className="mt-2 text-lg font-semibold tracking-tight text-slate-900 md:text-xl">
-        学习 / Education
-      </h2>
+    <div className="grid divide-y divide-[color:var(--border)] md:grid-cols-2 md:divide-y-0">
+      {educationEntries.map((e, idx) => (
+        <article
+          key={e.id}
+          tabIndex={0}
+          className={[
+            'group py-8 outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--text)] focus-visible:ring-offset-2',
+            idx === 1 ? 'md:border-l md:border-[color:var(--border)] md:pl-12' : 'md:pr-12',
+          ].join(' ')}
+        >
+          <h3 className="text-[18px] font-medium text-[color:var(--text)]">
+            {e.school}
+            {e.schoolNote ? (
+              <span
+                className="font-mono text-[11px] text-[#999999] ml-2 align-top"
+              >
+                {e.schoolNote.includes('40') ? 'QS #40' : e.schoolNote}
+              </span>
+            ) : null}
+          </h3>
+          <p className="mt-2 font-mono text-[12px] text-[#BBBBBB] tabular-nums">
+            {e.time}
+          </p>
 
-      <div className="mt-8">
-        <div className="grid divide-y divide-slate-300/35 md:grid-cols-2 md:divide-x md:divide-y-0">
-          {educationEntries.map((e) => (
-            <article
-              key={e.id}
-              tabIndex={0}
-              className="group p-6 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-200/55 md:p-7"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <h3 className="min-w-0 flex-1 text-lg font-semibold leading-tight tracking-tight text-slate-900 md:text-xl">
-                  {e.school}
-                </h3>
-                <div className="shrink-0 text-right">
-                  <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500">
-                    期间
-                  </p>
-                  <p className="mt-1 text-sm font-medium tabular-nums text-slate-800">{e.time}</p>
-                </div>
+          <div className="mt-4 text-[14px] leading-[1.8] font-light text-[#555555]">
+            <p>{e.program}</p>
+          </div>
+
+          <div className="mt-5 border-t border-[color:var(--border)] pt-5">
+            <div className="hidden overflow-hidden md:block max-h-0 opacity-0 transition-[max-height,opacity] duration-300 ease-out group-hover:max-h-[28rem] group-hover:opacity-100 group-focus-within:max-h-[28rem] group-focus-within:opacity-100">
+              <DetailBlock courses={e.courses} honors={e.honors} />
+            </div>
+
+            <details className="md:hidden">
+              <summary className="cursor-pointer select-none font-mono text-[10px] uppercase tracking-[0.25em] text-[#999999]">
+                课程
+              </summary>
+              <div className="mt-4">
+                <DetailBlock courses={e.courses} honors={e.honors} />
               </div>
-
-              <div className="mt-5 flex items-end justify-between gap-3 border-t border-slate-300/35 pt-4">
-                <p className="min-w-0 flex-1 text-sm leading-snug text-slate-700">{e.program}</p>
-                <p className="shrink-0 max-w-[42%] text-right text-xs leading-snug text-slate-600">
-                  {e.schoolNote ||
-                    (e.honors.length > 0 ? `${e.honors.length} 项荣誉` : '')}
-                </p>
-              </div>
-
-              <div className="hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out md:block max-h-0 opacity-0 group-hover:max-h-[28rem] group-hover:opacity-100 group-focus-within:max-h-[28rem] group-focus-within:opacity-100">
-                <div className="mt-4 border-t border-slate-300/35 pt-4">
-                  <DetailBlock courses={e.courses} honors={e.honors} />
-                </div>
-              </div>
-
-              <details className="mt-4 border-t border-slate-300/35 pt-4 md:hidden">
-                <summary className="cursor-pointer select-none text-xs font-medium text-slate-600">
-                  主修课程{e.honors.length > 0 ? '与荣誉' : ''}
-                </summary>
-                <div className="mt-3">
-                  <DetailBlock courses={e.courses} honors={e.honors} />
-                </div>
-              </details>
-            </article>
-          ))}
-        </div>
-      </div>
-    </BleedBand>
+            </details>
+          </div>
+        </article>
+      ))}
+    </div>
   );
 }

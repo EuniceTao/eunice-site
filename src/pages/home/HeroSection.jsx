@@ -1,105 +1,83 @@
 /**
  * @file HeroSection.jsx
- * @description 首页 Hero：杂志拼贴 + 衬线标题 + 引言；底部分割线（黑条 + 灰线）与下滚指示。
+ * @description 首页 Hero：左半屏单图轮换 + 右半屏白底姓名与角色标签；桌面左栏高度见 index.css 中 --hero-height-desktop。
  */
 
 import React from 'react';
 
-/** 拼贴图片（7 张，与 public/hero-*.jpg 一一对应） */
-const COLLAGE = [
-  {
-    src: '/hero-7.jpg',
-    className: 'col-span-12 md:col-span-7 aspect-[16/9] md:aspect-[21/9]',
-    eager: true,
-  },
-  {
-    src: '/hero-4.jpg',
-    className: 'col-span-6 md:col-span-2 aspect-[4/5] md:aspect-[3/4]',
-    eager: false,
-  },
-  {
-    src: '/hero-6.jpg',
-    className: 'col-span-6 md:col-span-3 aspect-[4/5] md:aspect-[3/4]',
-    eager: false,
-  },
-  {
-    src: '/hero-1.jpg',
-    className: 'col-span-12 md:col-span-4 aspect-[16/10]',
-    eager: false,
-  },
-  {
-    src: '/hero-5.jpg',
-    className: 'col-span-6 md:col-span-3 aspect-[4/5]',
-    eager: false,
-  },
-  {
-    src: '/hero-2.jpg',
-    className: 'col-span-6 md:col-span-3 aspect-[4/5]',
-    eager: false,
-  },
-  {
-    src: '/hero-3.jpg',
-    className: 'col-span-12 md:col-span-2 aspect-[3/4]',
-    eager: false,
-  },
+const FILM_PHOTOS = [
+  '/hero-7.jpg',
+  '/hero-6.jpg',
+  '/hero-1.jpg',
+  '/hero-5.jpg',
+  '/hero-2.png',
 ];
 
-function CollageTile({ className, children }) {
-  return (
-    <div className={['overflow-hidden rounded-lg bg-transparent', className].join(' ')}>
-      {children}
-    </div>
-  );
-}
+/** 每张停留时长（ms），偏慢、一张换一张 */
+const SLIDE_INTERVAL_MS = 9000;
 
 export function HeroSection() {
+  const [active, setActive] = React.useState(0);
+
+  React.useEffect(() => {
+    const id = window.setInterval(() => {
+      setActive((i) => (i + 1) % FILM_PHOTOS.length);
+    }, SLIDE_INTERVAL_MS);
+    return () => window.clearInterval(id);
+  }, []);
+
   return (
     <section className="relative">
-      <div className="relative py-6 md:py-8">
-        <div className="relative grid grid-cols-12 gap-3 md:gap-4">
-          {COLLAGE.map((item) => (
-            <CollageTile key={item.src} className={item.className}>
+      <div className="hero-split-bleed relative ml-[calc(50%-50vw)] mr-[calc(50%-50vw)] w-screen max-w-[100vw]">
+        <div className="hero-split">
+          <div className="hero-film-split" aria-hidden>
+            {FILM_PHOTOS.map((src, i) => (
               <img
-                src={item.src}
+                key={src}
+                src={src}
                 alt=""
-                className="h-full w-full object-cover"
-                loading={item.eager ? 'eager' : 'lazy'}
-                decoding={item.eager ? 'sync' : 'async'}
+                className={`hero-slide-img ${i === active ? 'hero-slide-img--active' : ''}`}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                decoding={i === 0 ? 'sync' : 'async'}
               />
-            </CollageTile>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <div className="relative mt-10 grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
-          <h1 className="font-serif text-[44px] leading-[0.92] tracking-tight text-slate-950 md:text-[72px] lg:text-[96px]">
-            Hi, 我是陶源「Eunice」
-          </h1>
+          <div className="hero-text-panel">
+            <h1
+              className="fade-up font-display font-light leading-[0.92] tracking-tight text-[color:var(--text)]"
+              style={{
+                fontSize: 'clamp(48px, 15vw, 96px)',
+                animationDelay: '0s',
+              }}
+            >
+              <span className="block">Hi,</span>
+              <span
+                className="mt-4 block md:mt-5"
+                style={{ fontSize: '0.78em', whiteSpace: 'nowrap' }}
+              >
+                我是陶源「Eunice」
+              </span>
+            </h1>
+            <div
+              className="fade-up mt-6 flex flex-col items-center text-center font-mono text-[12px] leading-relaxed tracking-[0.08em] text-[color:var(--text-muted)] md:mt-8 md:text-[13px]"
+              style={{ animationDelay: '0.15s' }}
+            >
+              <div className="flex max-w-[42rem] flex-wrap items-center justify-center">
+                <span>AI PM</span>
+                <span className="px-3">|</span>
+                <span>心理咨询师</span>
+                <span className="px-3">|</span>
+                <span>探索世界的 ENFP</span>
+              </div>
 
-          <div className="lg:pb-3">
-            <blockquote className="font-serif text-[18px] leading-[1.75] text-slate-700 md:text-[20px]">
-              当一个人能够如此单纯，如此觉醒，如此专注于当下，毫无疑虑地走过这个世界，生命真是一件赏心乐事。
-            </blockquote>
-            <div className="mt-3 flex justify-end">
-              <p className="text-sm text-slate-500">
-                —— 黑塞 《悉达多》 <span className="text-slate-400">(by - Hermann Hesse)</span>
-              </p>
+              <div className="mt-3 w-full max-w-[42rem]">
+                <span className="block whitespace-normal md:whitespace-nowrap">
+                  唱歌、旅行、古筝、剧本杀、拳击 成就解锁中... ...
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="relative mt-12 flex items-center gap-4 md:mt-14" aria-hidden>
-          <span className="h-1.5 w-14 shrink-0 rounded-sm bg-slate-900 md:w-20" />
-          <span className="h-px flex-1 bg-slate-300/90" />
-        </div>
-
-        <div className="relative mt-8 flex justify-center md:mt-10">
-          <a
-            href="#content"
-            className="scroll-indicator inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-500 ring-1 ring-slate-300/60 transition-colors hover:text-slate-900 hover:ring-slate-400/80"
-            aria-label="向下滚动"
-          >
-            <span className="text-lg leading-none">↓</span>
-          </a>
         </div>
       </div>
     </section>

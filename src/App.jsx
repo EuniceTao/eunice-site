@@ -10,27 +10,33 @@ import { SiteLayout } from './app/SiteLayout';
 import { HomePage } from './pages/home/HomePage';
 import { AboutPage } from './pages/about/AboutPage';
 import { ProjectsPage } from './pages/projects/ProjectsPage';
+import { ExperiencePage } from './pages/experience/ExperiencePage';
 import { WorkIndexPage } from './pages/work/WorkIndexPage';
 import { WorkDetailPage } from './pages/work/WorkDetailPage';
 import { BlogIndexPage } from './pages/blog/BlogIndexPage';
 import { BlogPostPage } from './pages/blog/BlogPostPage';
 import { NowPage } from './pages/now/NowPage';
+import { AdminLoginPage } from './pages/admin/AdminLoginPage';
+import { AdminNowPage } from './pages/admin/AdminNowPage';
 import { ContactPage } from './pages/contact/ContactPage';
 import { NotFoundPage } from './pages/not-found/NotFoundPage';
 
 function App() {
   return (
-    <Router>
+    <Router basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route element={<SiteLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/experience" element={<ExperiencePage />} />
           <Route path="/work" element={<WorkIndexPage />} />
           <Route path="/work/:id" element={<WorkDetailPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/blog" element={<BlogIndexPage />} />
           <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/now" element={<NowPage />} />
+          <Route path="/admin" element={<AdminLoginPage />} />
+          <Route path="/admin/now" element={<AdminNowPage />} />
           <Route path="/contact" element={<ContactPage />} />
         </Route>
 

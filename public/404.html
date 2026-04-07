@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting…</title>
+    <script>
+      // GitHub Pages SPA redirect (keeps clean URLs with BrowserRouter)
+      // Inspired by the "spa-github-pages" technique.
+      (function () {
+        var l = window.location;
+        var segmentCount = 1; // /<repo>/
+        var path = l.pathname.split('/').slice(0, 1 + segmentCount).join('/');
+        var rest = l.pathname.split('/').slice(1 + segmentCount).join('/');
+        var redirect =
+          path +
+          '/?/' +
+          rest +
+          (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+          l.hash;
+        l.replace(redirect);
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>
+

@@ -4,4 +4,6 @@
  */
 
 export * from './Reveal';
+export * from './ScrollReveal';
+export * from './useScrollReveal';
 

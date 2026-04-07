@@ -8,6 +8,8 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // GitHub Pages 子路径部署（/eunice-site/）
+  base: '/eunice-site/',
   plugins: [
     react(),
     tailwindcss(),

@@ -1,6 +1,6 @@
 /**
  * @file ProjectPreviewCard.jsx
- * @description 首页项目预览卡片：扁平线框分区（无阴影凸起），顶栏、正文、元数据行与底栏。
+ * @description 首页项目预览卡片：细边框与对比细节（不加装饰），hover 时边框变黑并加轻阴影。
  */
 
 import React from 'react';
@@ -9,6 +9,12 @@ import { Link } from 'react-router-dom';
 function initialsFromId(id) {
   const head = id.split('-')[0] || id;
   return head.slice(0, 2).toUpperCase();
+}
+
+function companyFromId(id) {
+  if (id.startsWith('bk-')) return 'BEIKE';
+  if (id.startsWith('bytedance-')) return 'BYTEDANCE';
+  return initialsFromId(id);
 }
 
 function ClockIcon({ className }) {
@@ -29,59 +35,46 @@ function ClockIcon({ className }) {
 }
 
 export function ProjectPreviewCard({ project, index = 0 }) {
-  const primaryTag = project.tags[0] ?? 'Project';
-  const secondaryTag = project.tags[1] ?? project.period;
+  const companyLabel = companyFromId(project.id);
+  const typeLabel = project.tags[0] ?? '';
+
+  const bottomHighlight =
+    project.id === 'bk-multistack'
+      ? '达成率 143%'
+      : project.id === 'bytedance-feedback-ops'
+        ? '覆盖 7 个中台产品'
+        : '中台事务线全覆盖';
 
   return (
     <Link to="/projects" className="group block h-full">
-      <div
-        className={[
-          'h-full px-5 py-7 md:px-6',
-          index > 0 ? 'border-t border-slate-300/50 md:border-t-0' : '',
-        ].join(' ')}
-      >
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <div className="flex items-center gap-3">
-              <span className="shrink-0 text-[11px] font-semibold tracking-tight text-slate-500">
-                {initialsFromId(project.id)}
-              </span>
-              <span className="truncate text-sm font-semibold text-slate-900 underline decoration-slate-300 underline-offset-4 transition-colors group-hover:decoration-slate-500">
-                {primaryTag}
-              </span>
-            </div>
-          </div>
-          <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-slate-600">
-            {secondaryTag}
+      <div className="flex h-full flex-col border border-[#E8E8E8] bg-white px-8 pb-7 pt-8 transition-[border-color,box-shadow] duration-300 ease-out group-hover:border-[#111111] group-hover:shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
+        <div className="flex items-center gap-4">
+          <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.25em] text-[#BBBBBB]">
+            {companyLabel}
+          </span>
+          <span className="h-px flex-1 bg-[#E8E8E8]" aria-hidden />
+          <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.25em] text-[#BBBBBB]">
+            {typeLabel}
           </span>
         </div>
 
-        <div className="mt-4 border-t border-slate-200/70 pt-4">
-          <h3 className="text-lg font-bold leading-snug tracking-tight text-slate-900 md:text-xl">
-            {project.title}
-          </h3>
-          <p className="mt-3 text-sm leading-[1.65] text-slate-600 line-clamp-5">
-            {project.outcome}
+        <h3 className="mt-6 text-[17px] font-medium leading-[1.5] text-[color:var(--text)]">
+          {project.title}
+        </h3>
+
+        <p className="mt-4 text-[13px] font-light leading-[1.7] text-[#666666] line-clamp-2">
+          {project.outcome}
+        </p>
+
+        <div className="my-5 h-px w-full bg-[#EEEEEE]" aria-hidden />
+
+        <div className="mt-auto flex items-center justify-between gap-6">
+          <p className="text-[15px] font-medium text-[#111111]">
+            {bottomHighlight}
           </p>
-        </div>
-
-        <div className="mt-4 grid gap-3 border-t border-slate-200/70 pt-4 md:grid-cols-2 md:gap-4">
-          <div>
-            <p className="text-xs font-semibold text-slate-800">周期</p>
-            <p className="mt-1 text-xs text-slate-500 tabular-nums">{project.period}</p>
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-slate-800">角色</p>
-            <p className="mt-1 text-xs text-slate-500 line-clamp-2">{project.role}</p>
-          </div>
-        </div>
-
-        <div className="mt-5 flex items-center justify-between text-xs text-slate-500">
-          <span className="flex items-center gap-2">
-            <ClockIcon className="h-3.5 w-3.5 shrink-0 text-slate-400" />
-            {project.period}
+          <span className="text-[#BBBBBB] transition-colors group-hover:text-[#111111]">
+            →
           </span>
-          <span className="text-slate-400 transition-colors group-hover:text-slate-700">→</span>
         </div>
       </div>
     </Link>
