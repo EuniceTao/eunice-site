@@ -189,6 +189,10 @@ export function AdminHomeEditorPage() {
                 <span className="text-[12px] leading-[1.7] text-[color:var(--text-muted)]">
                   需要 Supabase Storage 存储桶：`site-assets`（公开）。上传后记得「保存草稿/发布」。
                 </span>
+                <span className="text-[12px] leading-[1.7] text-[color:var(--text-muted)]">
+                  {uploading ? '上传中…（上传成功后会自动把 storage:… 加进下面的照片列表）' : null}
+                  {!uploading && status?.message ? `最新提示：${status.message}` : null}
+                </span>
               </label>
 
               <label className="grid gap-2">
