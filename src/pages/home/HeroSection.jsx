@@ -16,32 +16,66 @@ const FILM_PHOTOS = [
 
 /** 每张停留时长（ms），偏慢、一张换一张 */
 const SLIDE_INTERVAL_MS = 9000;
+const FADE_MS = 1200;
 
 export function HeroSection() {
   const [active, setActive] = React.useState(0);
+  const [prev, setPrev] = React.useState(null);
+  const [isFading, setIsFading] = React.useState(false);
+
+  const activeSrc = FILM_PHOTOS[active];
+  const nextSrc = FILM_PHOTOS[(active + 1) % FILM_PHOTOS.length];
 
   React.useEffect(() => {
     const id = window.setInterval(() => {
+      setPrev(activeSrc);
+      setIsFading(true);
       setActive((i) => (i + 1) % FILM_PHOTOS.length);
     }, SLIDE_INTERVAL_MS);
     return () => window.clearInterval(id);
-  }, []);
+  }, [activeSrc]);
+
+  React.useEffect(() => {
+    if (!isFading) return;
+    const t = window.setTimeout(() => {
+      setIsFading(false);
+      setPrev(null);
+    }, FADE_MS + 50);
+    return () => window.clearTimeout(t);
+  }, [isFading]);
+
+  React.useEffect(() => {
+    // 只预加载下一张，避免首屏把所有图都拉下来
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = nextSrc;
+  }, [nextSrc]);
 
   return (
     <section className="relative">
       <div className="hero-split-bleed relative ml-[calc(50%-50vw)] mr-[calc(50%-50vw)] w-screen max-w-[100vw]">
         <div className="hero-split">
           <div className="hero-film-split" aria-hidden>
-            {FILM_PHOTOS.map((src, i) => (
+            {prev ? (
               <img
-                key={src}
-                src={src}
+                key={`prev:${prev}`}
+                src={prev}
                 alt=""
-                className={`hero-slide-img ${i === active ? 'hero-slide-img--active' : ''}`}
-                loading={i === 0 ? 'eager' : 'lazy'}
-                decoding={i === 0 ? 'sync' : 'async'}
+                className={`hero-slide-img hero-slide-img--active ${isFading ? 'hero-slide-img--fadeout' : ''}`}
+                loading="eager"
+                decoding="async"
               />
-            ))}
+            ) : null}
+
+            <img
+              key={`active:${activeSrc}`}
+              src={activeSrc}
+              alt=""
+              className="hero-slide-img hero-slide-img--active"
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+            />
           </div>
 
           <div className="hero-text-panel">

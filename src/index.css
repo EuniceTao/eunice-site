@@ -143,6 +143,11 @@
   opacity: 1;
 }
 
+.hero-slide-img--fadeout {
+  z-index: 0;
+  opacity: 0;
+}
+
 .hero-text-panel {
   display: flex;
   min-height: 0;
