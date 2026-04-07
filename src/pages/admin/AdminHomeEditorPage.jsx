@@ -121,7 +121,7 @@ export function AdminHomeEditorPage() {
     setUploading(true);
     try {
       const bucket = 'site-assets';
-      const uploadedUrls = [];
+      const uploadedPaths = [];
 
       for (const file of Array.from(files)) {
         const ext = file.name.split('.').pop() || 'jpg';
@@ -132,23 +132,22 @@ export function AdminHomeEditorPage() {
           .from(bucket)
           .upload(path, file, { upsert: false, cacheControl: '31536000' });
         if (upErr) throw upErr;
-
-        const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-        if (data?.publicUrl) uploadedUrls.push(data.publicUrl);
+        uploadedPaths.push(path);
       }
 
-      if (uploadedUrls.length > 0) {
-        setHeroDraft((p) => ({ ...p, photos: [...uploadedUrls, ...(p.photos || [])] }));
+      if (uploadedPaths.length > 0) {
+        const refs = uploadedPaths.map((p) => `storage:site-assets/${p}`);
+        setHeroDraft((p) => ({ ...p, photos: [...refs, ...(p.photos || [])] }));
         setStatus({
           type: 'success',
-          message: `已上传 ${uploadedUrls.length} 张图片，并已加入照片列表（记得保存草稿/发布）。`,
+          message: `已上传 ${uploadedPaths.length} 张图片，并已加入照片列表（记得保存草稿/发布）。`,
         });
       }
     } catch (err) {
       setStatus({
         type: 'error',
         message:
-          `上传失败：${err?.message ?? '未知错误'}。请确认 Supabase Storage 已创建公开 bucket：site-assets`,
+          `上传失败：${err?.message ?? '未知错误'}。请确认 Supabase Storage 已创建 bucket：site-assets，并允许登录用户上传。`,
       });
     } finally {
       setUploading(false);
@@ -229,7 +228,7 @@ export function AdminHomeEditorPage() {
               </label>
 
               <p className="text-[12px] leading-[1.7] text-[color:var(--text-muted)]">
-                如果你填的是 public 目录里的文件名（如 `hero-7.jpg`），前台会自动拼接 GitHub Pages 的 base 路径。
+                支持三种格式：public 文件名（如 `hero-7.jpg`）、直接 URL、或 `storage:site-assets/路径`（私有 bucket 通过签名链接展示）。
               </p>
             </div>
           </section>

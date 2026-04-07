@@ -6,6 +6,7 @@
 import React from 'react';
 import { publicUrl } from '../../lib/publicUrl';
 import { useSiteBlock } from '../site-blocks/useSiteBlock';
+import { getSignedAssetUrl } from '../../lib/signedAssetUrl';
 
 const FILM_PHOTOS = [
   publicUrl('hero-7.jpg'),
@@ -29,16 +30,42 @@ export function HeroSection() {
     },
   });
 
-  const photos = React.useMemo(() => {
-    const raw = Array.isArray(heroBlock?.photos) ? heroBlock.photos : null;
-    const list = raw && raw.length > 0 ? raw : FILM_PHOTOS;
-    return list.map((p) => {
-      const s = String(p || '').trim();
-      if (!s) return '';
-      // 文件名/相对路径 → publicUrl；绝对 URL 原样
-      if (s.startsWith('http://') || s.startsWith('https://')) return s;
-      return publicUrl(s);
-    }).filter(Boolean);
+  const [photos, setPhotos] = React.useState(FILM_PHOTOS);
+
+  React.useEffect(() => {
+    let cancelled = false;
+
+    async function resolvePhotos() {
+      const raw = Array.isArray(heroBlock?.photos) ? heroBlock.photos : null;
+      const list = raw && raw.length > 0 ? raw : FILM_PHOTOS;
+
+      const resolved = await Promise.all(
+        list.map(async (p) => {
+          const s = String(p || '').trim();
+          if (!s) return '';
+          if (s.startsWith('http://') || s.startsWith('https://')) return s;
+
+          // 私有存储引用：storage:<bucket>/<path>
+          if (s.startsWith('storage:')) {
+            const ref = s.slice('storage:'.length);
+            const [bucket, ...rest] = ref.split('/');
+            const path = rest.join('/');
+            const signed = await getSignedAssetUrl({ bucket, path, expiresInSec: 3600 });
+            return signed || '';
+          }
+
+          // public 文件名/相对路径
+          return publicUrl(s);
+        })
+      );
+
+      if (!cancelled) setPhotos(resolved.filter(Boolean));
+    }
+
+    resolvePhotos();
+    return () => {
+      cancelled = true;
+    };
   }, [heroBlock?.photos]);
 
   const [active, setActive] = React.useState(0);
