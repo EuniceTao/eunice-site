@@ -18,6 +18,7 @@ import { BlogPostPage } from './pages/blog/BlogPostPage';
 import { NowPage } from './pages/now/NowPage';
 import { AdminLoginPage } from './pages/admin/AdminLoginPage';
 import { AdminNowPage } from './pages/admin/AdminNowPage';
+import { AdminNotesPage } from './pages/admin/AdminNotesPage';
 import { ContactPage } from './pages/contact/ContactPage';
 import { NotFoundPage } from './pages/not-found/NotFoundPage';
 
@@ -37,6 +38,7 @@ function App() {
           <Route path="/now" element={<NowPage />} />
           <Route path="/admin" element={<AdminLoginPage />} />
           <Route path="/admin/now" element={<AdminNowPage />} />
+          <Route path="/admin/notes" element={<AdminNotesPage />} />
           <Route path="/contact" element={<ContactPage />} />
         </Route>
 

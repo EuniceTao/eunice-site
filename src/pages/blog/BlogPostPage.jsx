@@ -6,12 +6,12 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Page } from '../../design-system';
-import { getPostBySlug } from './blogData';
 import { Markdown } from './Markdown';
+import { useNotesPosts } from './useNotesPosts';
 
 export function BlogPostPage() {
   const { slug } = useParams(); // 路由参数
-  const post = getPostBySlug(slug); // 文章数据
+  const { post } = useNotesPosts({ slug });
 
   if (!post) {
     return (

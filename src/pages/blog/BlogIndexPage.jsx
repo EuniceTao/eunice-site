@@ -6,9 +6,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Page } from '../../design-system';
-import { posts } from './blogData';
+import { useNotesPosts } from './useNotesPosts';
 
 export function BlogIndexPage() {
+  const { posts } = useNotesPosts();
+
   return (
     <Page
       title="Blog / Notes"
@@ -17,7 +19,7 @@ export function BlogIndexPage() {
       <div className="space-y-3">
         {posts.map((p) => (
           <Link
-            key={p.slug}
+            key={p.slug || p.id}
             to={`/blog/${p.slug}`}
             className="block rounded-2xl border border-slate-200 bg-white p-6 hover:border-slate-300 transition-colors"
           >

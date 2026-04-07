@@ -28,6 +28,7 @@ const GUARDED_FILES = [
   'src/pages/now/NowPage.jsx',
   'src/pages/admin/AdminLoginPage.jsx',
   'src/pages/admin/AdminNowPage.jsx',
+  'src/pages/admin/AdminNotesPage.jsx',
   'src/pages/projects/ProjectsPage.jsx',
   'src/pages/projects/projectsData.js',
   'src/pages/work/WorkIndexPage.jsx',
