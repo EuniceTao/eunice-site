@@ -22,18 +22,39 @@ export function HeroSection() {
   const [active, setActive] = React.useState(0);
   const [prev, setPrev] = React.useState(null);
   const [isFading, setIsFading] = React.useState(false);
+  const [broken, setBroken] = React.useState(() => new Set());
 
   const activeSrc = FILM_PHOTOS[active];
   const nextSrc = FILM_PHOTOS[(active + 1) % FILM_PHOTOS.length];
+
+  const nextIndex = React.useMemo(() => {
+    // 找到下一个“未坏掉”的索引，避免循环滚到空白
+    if (!broken?.size) return (active + 1) % FILM_PHOTOS.length;
+    for (let step = 1; step <= FILM_PHOTOS.length; step += 1) {
+      const idx = (active + step) % FILM_PHOTOS.length;
+      if (!broken.has(FILM_PHOTOS[idx])) return idx;
+    }
+    return (active + 1) % FILM_PHOTOS.length;
+  }, [active, broken]);
+
+  const safeNextSrc = FILM_PHOTOS[nextIndex];
+
+  const markBroken = React.useCallback((src) => {
+    setBroken((prevSet) => {
+      const nextSet = new Set(prevSet);
+      nextSet.add(src);
+      return nextSet;
+    });
+  }, []);
 
   React.useEffect(() => {
     const id = window.setInterval(() => {
       setPrev(activeSrc);
       setIsFading(true);
-      setActive((i) => (i + 1) % FILM_PHOTOS.length);
+      setActive(nextIndex);
     }, SLIDE_INTERVAL_MS);
     return () => window.clearInterval(id);
-  }, [activeSrc]);
+  }, [activeSrc, nextIndex]);
 
   React.useEffect(() => {
     if (!isFading) return;
@@ -48,8 +69,8 @@ export function HeroSection() {
     // 只预加载下一张，避免首屏把所有图都拉下来
     const img = new Image();
     img.decoding = 'async';
-    img.src = nextSrc;
-  }, [nextSrc]);
+    img.src = safeNextSrc;
+  }, [safeNextSrc]);
 
   return (
     <section className="relative">
@@ -75,6 +96,10 @@ export function HeroSection() {
               loading="eager"
               decoding="async"
               fetchPriority="high"
+              onError={() => {
+                markBroken(activeSrc);
+                setActive(nextIndex);
+              }}
             />
           </div>
 
