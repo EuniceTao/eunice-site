@@ -6,12 +6,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useNowEntries } from '../now/useNowEntries';
+import { useNotesPosts } from '../blog/useNotesPosts';
 
 export function MoreAboutMeSection() {
   const { entries } = useNowEntries();
   const latestNow = entries?.[0];
   const latestNowMeta = latestNow?.date ? `最近：${latestNow.date}` : '';
   const latestNowPreview = latestNow?.body?.[0] || '随手记几条：今天在做什么、在想什么。';
+
+  const { posts } = useNotesPosts();
+  const latestNote = posts?.[0];
+  const latestNoteMeta = latestNote?.date ? `最近：${latestNote.date}` : '';
+  const latestNotePreview = latestNote?.summary || '把值得写的写清楚，把值得留的留下来。';
 
   return (
     <div className="mt-9 grid gap-8 md:grid-cols-2 md:gap-12">
@@ -25,8 +31,13 @@ export function MoreAboutMeSection() {
         <h2 className="font-body text-[22px] font-normal text-[color:var(--text)]">
           笔记
         </h2>
-        <p className="mt-4 text-[14px] leading-[1.8] font-light text-[#666666]">
-          产品思考、行业观察，也记录折腾与生活。
+        {latestNoteMeta ? (
+          <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.15em] text-[color:var(--text-light)]">
+            {latestNoteMeta}
+          </p>
+        ) : null}
+        <p className="mt-4 text-[14px] leading-[1.8] font-light text-[#666666] line-clamp-2">
+          {latestNote?.title ? `${latestNote.title}：${latestNotePreview}` : latestNotePreview}
         </p>
       </Link>
 
