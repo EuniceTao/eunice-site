@@ -8,19 +8,32 @@ import { Link, useParams } from 'react-router-dom';
 import { Page } from '../../design-system';
 import { Markdown } from './Markdown';
 import { useNotesPosts } from './useNotesPosts';
+import { useSiteBlock } from '../site-blocks/useSiteBlock';
 
 export function BlogPostPage() {
   const { slug } = useParams(); // 路由参数
   const { post } = useNotesPosts({ slug });
 
+  const { content: copy } = useSiteBlock('copy.blogPost', {
+    fallback: {
+      notFoundTitle: 'Not found',
+      notFoundDescriptionMd: '这篇文章可能还没写好，或者链接写错了。',
+      backToListLabel: '← 返回文章列表',
+      allPostsLabel: '← All posts',
+    },
+  });
+
   if (!post) {
     return (
-      <Page title="Not found" description="这篇文章可能还没写好，或者链接写错了。">
+      <Page
+        title={copy?.notFoundTitle || 'Not found'}
+        description={copy?.notFoundDescriptionMd || '这篇文章可能还没写好，或者链接写错了。'}
+      >
         <Link
           to="/blog"
           className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
         >
-          ← 返回文章列表
+          {copy?.backToListLabel || '← 返回文章列表'}
         </Link>
       </Page>
     );
@@ -34,7 +47,7 @@ export function BlogPostPage() {
           to="/blog"
           className="hover:text-slate-600 transition-colors"
         >
-          ← All posts
+          {copy?.allPostsLabel || '← All posts'}
         </Link>
       </div>
 

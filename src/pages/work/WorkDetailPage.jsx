@@ -7,6 +7,7 @@ import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Page } from '../../design-system';
 import { getWorkItem } from './workData';
+import { useSiteBlock } from '../site-blocks/useSiteBlock';
 
 function extractMetrics(texts) {
   const joined = texts.filter(Boolean).join(' ');
@@ -31,14 +32,26 @@ export function WorkDetailPage() {
   const { id } = useParams(); // 路由参数
   const item = getWorkItem(id); // 数据
 
+  const { content: copy } = useSiteBlock('copy.workDetail', {
+    fallback: {
+      notFoundTitle: 'Not found',
+      notFoundDescriptionMd: '这条经历不存在，或者链接写错了。',
+      backToWorkLabel: '← 返回 Work',
+      topNavBackLabel: '← Work 时间轴',
+    },
+  });
+
   if (!item) {
     return (
-      <Page title="Not found" description="这条经历不存在，或者链接写错了。">
+      <Page
+        title={copy?.notFoundTitle || 'Not found'}
+        description={copy?.notFoundDescriptionMd || '这条经历不存在，或者链接写错了。'}
+      >
         <Link
           to="/work"
           className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
         >
-          ← 返回 Work
+          {copy?.backToWorkLabel || '← 返回 Work'}
         </Link>
       </Page>
     );
@@ -50,7 +63,7 @@ export function WorkDetailPage() {
     <Page title={`${item.company}`} description={`${item.role} · ${item.time}`}>
       <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.15em] text-[color:var(--text-muted)]">
         <Link to="/work" className="hover:text-slate-600 transition-colors">
-          ← Work 时间轴
+          {copy?.topNavBackLabel || '← Work 时间轴'}
         </Link>
         <span className="text-[color:var(--text-light)]">{item.time}</span>
       </div>
