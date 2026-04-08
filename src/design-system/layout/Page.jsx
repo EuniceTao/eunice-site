@@ -23,9 +23,9 @@ export function Page({ title, description, children, className }) {
               </h1>
             )}
             {description && (
-              <p className="mt-3 max-w-prose text-base leading-relaxed text-slate-500">
-                {isMarkdown ? <Markdown>{desc}</Markdown> : desc}
-              </p>
+              <div className="mt-3 max-w-prose text-base leading-relaxed text-slate-500">
+                {isMarkdown ? <Markdown>{desc}</Markdown> : <p>{desc}</p>}
+              </div>
             )}
           </header>
         )}

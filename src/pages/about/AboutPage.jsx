@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { Page } from '../../design-system';
+import { useSiteBlock } from '../site-blocks/useSiteBlock';
 
 function EducationCard({ time, school, program, meta }) {
   return (
@@ -51,24 +52,38 @@ function TimelineItem({ time, title, subtitle, highlights }) {
 }
 
 export function AboutPage() {
-  const bullets = [
-    '产品与运营双视角：既关注体验与结构，也能把方案推动落地。',
-    '习惯用数据与反馈说话：建立度量→定位问题→协同推进→复盘迭代。',
-    '擅长跨团队协作：和 PM、研发、设计对齐目标，把复杂项目拆解成可执行节奏。',
-  ];
+  const fallback = {
+    pageDescriptionMd: '不是干巴巴的简历，是一段更接近“我是谁”的叙述。',
+    educationHeading: '学习经历',
+    educationIntroMd: '这部分更像“背景信息”：我学过什么、对什么感兴趣，以及它们如何影响我的工作方式。',
+    experienceHeading: '工作经历（时间轴）',
+    experienceIntroMd: '我更愿意用“做成了什么”来描述工作：在真实约束下推进落地，在结果里持续复盘。',
+    valuesHeading: '我在意的几件事',
+    valuesBullets: [
+      '产品与运营双视角：既关注体验与结构，也能把方案推动落地。',
+      '习惯用数据与反馈说话：建立度量→定位问题→协同推进→复盘迭代。',
+      '擅长跨团队协作：和 PM、研发、设计对齐目标，把复杂项目拆解成可执行节奏。',
+    ],
+    nowHeading: '现在在做什么 / 关注什么',
+    nowCards: [
+      '在做：贝壳中台产研事务线的项目管理系统与 AI 赋能助手（规划、设计与推广落地）。',
+      '在推进：工程师多栈转型项目的分层运营与机制设计（等级体系、活动策略与复盘）。',
+      '在关注：用户体验度量、反馈闭环、以及 AI 如何提升团队效率与协作质量。',
+    ],
+  };
 
-  const now = [
-    '在做：贝壳中台产研事务线的项目管理系统与 AI 赋能助手（规划、设计与推广落地）。',
-    '在推进：工程师多栈转型项目的分层运营与机制设计（等级体系、活动策略与复盘）。',
-    '在关注：用户体验度量、反馈闭环、以及 AI 如何提升团队效率与协作质量。',
-  ];
+  const { content: copy } = useSiteBlock('copy.about', { fallback });
+  const bullets = Array.isArray(copy?.valuesBullets) ? copy.valuesBullets : fallback.valuesBullets;
+  const now = Array.isArray(copy?.nowCards) ? copy.nowCards : fallback.nowCards;
 
   return (
-    <Page title="About" description="不是干巴巴的简历，是一段更接近“我是谁”的叙述。">
+    <Page title="About" description={copy?.pageDescriptionMd || fallback.pageDescriptionMd}>
       <section id="education">
-        <h2 className="text-sm font-semibold tracking-wide text-slate-900">学习经历</h2>
+        <h2 className="text-sm font-semibold tracking-wide text-slate-900">
+          {copy?.educationHeading || fallback.educationHeading}
+        </h2>
         <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-500">
-          这部分更像“背景信息”：我学过什么、对什么感兴趣，以及它们如何影响我的工作方式。
+          {copy?.educationIntroMd || fallback.educationIntroMd}
         </p>
 
         <div className="mt-7 grid gap-4 md:grid-cols-2">
@@ -88,9 +103,11 @@ export function AboutPage() {
       </section>
 
       <section id="experience" className="mt-10">
-        <h2 className="text-sm font-semibold tracking-wide text-slate-900">工作经历（时间轴）</h2>
+        <h2 className="text-sm font-semibold tracking-wide text-slate-900">
+          {copy?.experienceHeading || fallback.experienceHeading}
+        </h2>
         <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-500">
-          我更愿意用“做成了什么”来描述工作：在真实约束下推进落地，在结果里持续复盘。
+          {copy?.experienceIntroMd || fallback.experienceIntroMd}
         </p>
 
         <ol className="mt-7 space-y-8">
@@ -119,7 +136,9 @@ export function AboutPage() {
       </section>
 
       <section className="mt-10 rounded-2xl border border-slate-200 bg-white p-7">
-        <h2 className="text-sm font-semibold tracking-wide text-slate-900">我在意的几件事</h2>
+        <h2 className="text-sm font-semibold tracking-wide text-slate-900">
+          {copy?.valuesHeading || fallback.valuesHeading}
+        </h2>
         <ul className="mt-4 space-y-3 text-sm leading-relaxed text-slate-600">
           {bullets.map((b) => (
             <li key={b} className="flex gap-3">
@@ -131,7 +150,9 @@ export function AboutPage() {
       </section>
 
       <section className="mt-10">
-        <h2 className="text-sm font-semibold tracking-wide text-slate-900">现在在做什么 / 关注什么</h2>
+        <h2 className="text-sm font-semibold tracking-wide text-slate-900">
+          {copy?.nowHeading || fallback.nowHeading}
+        </h2>
         <div className="mt-4 grid gap-4 md:grid-cols-3">
           {now.map((n) => (
             <div key={n} className="rounded-2xl border border-slate-200 bg-white p-6">

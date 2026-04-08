@@ -6,6 +6,7 @@
 import React from 'react';
 import { Page } from '../../design-system';
 import { projects } from './projectsData';
+import { useSiteBlock } from '../site-blocks/useSiteBlock';
 
 function toBullets(text) {
   if (!text) return [];
@@ -24,10 +25,17 @@ function Tag({ children }) {
 }
 
 export function ProjectsPage() {
+  const { content: copy } = useSiteBlock('copy.projects', {
+    fallback: {
+      pageDescriptionMd: '先给你一个可扫读的版本：每个项目先看一句结果，展开再看背景与过程。',
+      title: 'Work',
+    },
+  });
+
   return (
     <Page
-      title="Work"
-      description="先给你一个可扫读的版本：每个项目先看一句结果，展开再看背景与过程。"
+      title={copy?.title || 'Work'}
+      description={copy?.pageDescriptionMd || '先给你一个可扫读的版本：每个项目先看一句结果，展开再看背景与过程。'}
     >
       <div className="space-y-4">
         {projects.map((p) => (

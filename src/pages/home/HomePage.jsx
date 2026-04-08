@@ -12,6 +12,7 @@ import { ExperienceSection } from './ExperienceSection';
 import { MoreAboutMeSection } from './MoreAboutMeSection';
 import { projects } from '../projects/projectsData';
 import { useSiteBlock } from '../site-blocks/useSiteBlock';
+import { Markdown } from '../blog/Markdown';
 
 export function HomePage() {
   const { content: projectsBlock } = useSiteBlock('experience.projects', {
@@ -19,6 +20,26 @@ export function HomePage() {
   });
   const allProjects = Array.isArray(projectsBlock?.items) ? projectsBlock.items : projects;
   const projectsPreview = allProjects.slice(0, 3);
+
+  const { content: copy } = useSiteBlock('copy.home', {
+    fallback: {
+      contactLabel: 'CONTACT',
+      contactTitle: '联系我',
+      contactBodyMd: '如果你想合作、咨询，或者只是想聊聊，都欢迎给我留言。',
+      emailLabel: '邮箱',
+      email: 'taoyuan_china@163.com',
+      wechatLabel: '微信',
+      wechat: 'Tyuan1216',
+      socialsLabel: '社交媒体',
+      socials: [
+        { label: '小红书', value: '@陶子小姐和她的英镑小朋友' },
+        { label: '微博', value: '@陶子小姐不吃桃' },
+        { label: '抖音', value: '@陶子小姐不吃桃' },
+      ],
+      contactCtaText: '去留言 →',
+      contactCtaTo: '/contact',
+    },
+  });
 
   return (
     <Page
@@ -77,59 +98,55 @@ export function HomePage() {
               <div className="flex flex-wrap items-start justify-between gap-8">
               <div className="min-w-0 max-w-none flex-1">
                 <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#999999] mb-3">
-                  CONTACT
+                  {copy?.contactLabel || 'CONTACT'}
                 </p>
                 <h2 className="font-display font-light text-white" style={{ fontSize: 'clamp(32px, 5vw, 48px)' }}>
-                  联系我
+                  {copy?.contactTitle || '联系我'}
                 </h2>
-                <p className="mt-4 max-w-prose text-[14px] leading-[1.8] font-light text-[#BBBBBB]">
-                  如果你想合作、咨询，或者只是想聊聊，都欢迎给我留言。
-                </p>
+                <div className="mt-4 max-w-prose text-[14px] leading-[1.8] font-light text-[#BBBBBB]">
+                  <Markdown>{copy?.contactBodyMd || '如果你想合作、咨询，或者只是想聊聊，都欢迎给我留言。'}</Markdown>
+                </div>
                 <div className="mt-6 space-y-8">
                   <dl className="grid grid-cols-1 gap-x-8 gap-y-4 font-mono text-[13px] text-[#BBBBBB] sm:grid-cols-2 sm:gap-y-3">
                     <div className="grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-[5.5rem_1fr] sm:items-baseline">
-                      <dt className="text-[11px] uppercase tracking-[0.12em] text-[#888888]">邮箱</dt>
+                      <dt className="text-[11px] uppercase tracking-[0.12em] text-[#888888]">{copy?.emailLabel || '邮箱'}</dt>
                       <dd className="min-w-0">
                         <a
-                          href="mailto:taoyuan_china@163.com"
+                          href={`mailto:${copy?.email || 'taoyuan_china@163.com'}`}
                           className="underline decoration-white/25 underline-offset-4 transition-colors hover:text-white hover:decoration-white/60"
                         >
-                          taoyuan_china@163.com
+                          {copy?.email || 'taoyuan_china@163.com'}
                         </a>
                       </dd>
                     </div>
                     <div className="grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-[5.5rem_1fr] sm:items-baseline">
-                      <dt className="text-[11px] uppercase tracking-[0.12em] text-[#888888]">微信</dt>
-                      <dd className="min-w-0">Tyuan1216</dd>
+                      <dt className="text-[11px] uppercase tracking-[0.12em] text-[#888888]">{copy?.wechatLabel || '微信'}</dt>
+                      <dd className="min-w-0">{copy?.wechat || 'Tyuan1216'}</dd>
                     </div>
                   </dl>
                   <div>
                     <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#888888]">
-                      社交媒体
+                      {copy?.socialsLabel || '社交媒体'}
                     </p>
                     <dl className="mt-3 grid grid-cols-1 gap-6 font-mono text-[13px] text-[#BBBBBB] sm:grid-cols-3 sm:gap-8">
-                      <div className="min-w-0">
-                        <dt className="text-[11px] uppercase tracking-[0.12em] text-[#888888]">小红书</dt>
-                        <dd className="mt-1 break-words">@陶子小姐和她的英镑小朋友</dd>
-                      </div>
-                      <div className="min-w-0">
-                        <dt className="text-[11px] uppercase tracking-[0.12em] text-[#888888]">微博</dt>
-                        <dd className="mt-1">@陶子小姐不吃桃</dd>
-                      </div>
-                      <div className="min-w-0">
-                        <dt className="text-[11px] uppercase tracking-[0.12em] text-[#888888]">抖音</dt>
-                        <dd className="mt-1">@陶子小姐不吃桃</dd>
-                      </div>
+                      {(Array.isArray(copy?.socials) ? copy.socials : []).map((s) => (
+                        <div key={s?.label || s?.value} className="min-w-0">
+                          <dt className="text-[11px] uppercase tracking-[0.12em] text-[#888888]">
+                            {s?.label || ''}
+                          </dt>
+                          <dd className="mt-1 break-words">{s?.value || ''}</dd>
+                        </div>
+                      ))}
                     </dl>
                   </div>
                 </div>
               </div>
               <div className="flex shrink-0 flex-wrap items-center gap-3">
                 <Link
-                  to="/contact"
+                  to={copy?.contactCtaTo || '/contact'}
                   className="inline-flex items-center rounded-[4px] border border-white bg-transparent px-4 py-2 text-[13px] text-white transition-colors hover:bg-white hover:text-[#111111]"
                 >
-                  去留言 →
+                  {copy?.contactCtaText || '去留言 →'}
                 </Link>
               </div>
             </div>

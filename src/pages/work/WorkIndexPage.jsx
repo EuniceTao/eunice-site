@@ -7,6 +7,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Page } from '../../design-system';
 import { workItems } from './workData';
+import { useSiteBlock } from '../site-blocks/useSiteBlock';
 
 function WorkRow({ item }) {
   return (
@@ -32,7 +33,7 @@ function WorkRow({ item }) {
             {item.summary}
           </p>
           <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.15em] text-[color:var(--text-muted)] transition-colors group-hover:text-[color:var(--text)]">
-            查看详情 →
+            {item._viewDetailsLabel || '查看详情 →'}
           </p>
         </div>
       </div>
@@ -41,14 +42,22 @@ function WorkRow({ item }) {
 }
 
 export function WorkIndexPage() {
+  const { content: copy } = useSiteBlock('copy.work', {
+    fallback: {
+      pageDescriptionMd: '工作经历时间轴：先扫一眼公司/岗位/时间，点开看具体做成了什么。',
+      viewDetailsLabel: '查看详情 →',
+      title: 'Work',
+    },
+  });
+
   return (
     <Page
-      title="Work"
-      description="工作经历时间轴：先扫一眼公司/岗位/时间，点开看具体做成了什么。"
+      title={copy?.title || 'Work'}
+      description={copy?.pageDescriptionMd || '工作经历时间轴：先扫一眼公司/岗位/时间，点开看具体做成了什么。'}
     >
       <div className="mt-12">
         {workItems.map((item) => (
-          <WorkRow key={item.id} item={item} />
+          <WorkRow key={item.id} item={{ ...item, _viewDetailsLabel: copy?.viewDetailsLabel }} />
         ))}
       </div>
     </Page>

@@ -7,14 +7,21 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Page } from '../../design-system';
 import { useNotesPosts } from './useNotesPosts';
+import { useSiteBlock } from '../site-blocks/useSiteBlock';
 
 export function BlogIndexPage() {
   const { posts } = useNotesPosts();
+  const { content: copy } = useSiteBlock('copy.blog', {
+    fallback: {
+      pageDescriptionMd: '不追求高频更新。把值得写的写清楚，把值得留的留下来。',
+      title: 'Blog / Notes',
+    },
+  });
 
   return (
     <Page
-      title="Blog / Notes"
-      description="不追求高频更新。把值得写的写清楚，把值得留的留下来。"
+      title={copy?.title || 'Blog / Notes'}
+      description={copy?.pageDescriptionMd || '不追求高频更新。把值得写的写清楚，把值得留的留下来。'}
     >
       <div className="space-y-3">
         {posts.map((p) => (
