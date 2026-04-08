@@ -147,7 +147,7 @@ export function AdminHomeEditorPage() {
       setStatus({
         type: 'error',
         message:
-          `上传失败：${err?.message ?? '未知错误'}。请确认 Supabase Storage 已创建 bucket：site-assets，并允许登录用户上传。`,
+          `上传失败：${err?.message ?? '未知错误'}。若提示 RLS：请在 Supabase SQL Editor 执行 migrations 里的 storage 策略（site-assets 写入权限）。`,
       });
     } finally {
       setUploading(false);
