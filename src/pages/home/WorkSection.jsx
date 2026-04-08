@@ -46,7 +46,7 @@ export function WorkSection({ showAllLink = true } = {}) {
             </p>
 
             <div className="mt-4 flex flex-wrap gap-2">
-              {tagsForWorkId(w.id).map((t) => (
+              {(Array.isArray(w.tags) && w.tags.length > 0 ? w.tags : tagsForWorkId(w.id)).map((t) => (
                 <span
                   key={t}
                   className="inline-flex items-center rounded-[2px] border border-[#DDDDDD] px-2.5 py-[2px] font-mono text-[11px] text-[#888888]"
