@@ -5,11 +5,12 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Input, Page, Textarea } from '../../design-system';
+import { Button, ImageCropDialog, Input, Page, Textarea } from '../../design-system';
 import { useAdminSession } from './useAdminSession';
 import { AdminShell } from './AdminShell';
 import { getSiteBlockRow, publishSiteBlock, saveSiteBlockDraft } from '../site-blocks/siteBlocksApi';
 import { supabase } from '../../lib/supabaseClient';
+import { cropImageFileToJpegBlob } from '../../lib/imageCrop';
 
 function parseLines(value) {
   return String(value || '')
@@ -29,6 +30,9 @@ export function AdminHomeEditorPage() {
   const [status, setStatus] = useState(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [cropOpen, setCropOpen] = useState(false);
+  const [cropQueue, setCropQueue] = useState([]);
+  const [cropFile, setCropFile] = useState(null);
 
   const [heroDraft, setHeroDraft] = useState({
     nameLine: '我是陶源「Eunice」',
@@ -110,7 +114,7 @@ export function AdminHomeEditorPage() {
     }
   }
 
-  async function uploadHeroPhotos(files) {
+  function startCropFlow(files) {
     if (!supabase) {
       setStatus({ type: 'error', message: 'Supabase 未配置，无法上传。' });
       return;
@@ -118,40 +122,32 @@ export function AdminHomeEditorPage() {
     if (!files || files.length === 0) return;
 
     setStatus(null);
-    setUploading(true);
-    try {
-      const bucket = 'site-assets';
-      const uploadedPaths = [];
+    const list = Array.from(files);
+    setCropQueue(list);
+    setCropFile(list[0] ?? null);
+    setCropOpen(true);
+  }
 
-      for (const file of Array.from(files)) {
-        const ext = file.name.split('.').pop() || 'jpg';
-        const id = (crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`).replace(/\./g, '');
-        const path = `hero/${new Date().toISOString().slice(0, 10)}/${id}.${ext}`;
+  async function uploadCroppedHeroImage({ file, crop }) {
+    if (!supabase) throw new Error('Supabase 未配置');
+    if (!file) throw new Error('缺少文件');
 
-        const { error: upErr } = await supabase.storage
-          .from(bucket)
-          .upload(path, file, { upsert: false, cacheControl: '31536000' });
-        if (upErr) throw upErr;
-        uploadedPaths.push(path);
-      }
+    const bucket = 'site-assets';
+    const id = (crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`).replace(/\./g, '');
+    const path = `hero/${new Date().toISOString().slice(0, 10)}/${id}.jpg`;
 
-      if (uploadedPaths.length > 0) {
-        const refs = uploadedPaths.map((p) => `storage:site-assets/${p}`);
-        setHeroDraft((p) => ({ ...p, photos: [...refs, ...(p.photos || [])] }));
-        setStatus({
-          type: 'success',
-          message: `已上传 ${uploadedPaths.length} 张图片，并已加入照片列表（记得保存草稿/发布）。`,
-        });
-      }
-    } catch (err) {
-      setStatus({
-        type: 'error',
-        message:
-          `上传失败：${err?.message ?? '未知错误'}。若提示 RLS：请在 Supabase SQL Editor 执行 migrations 里的 storage 策略（site-assets 写入权限）。`,
-      });
-    } finally {
-      setUploading(false);
-    }
+    const blob = await cropImageFileToJpegBlob(file, crop);
+
+    const { error: upErr } = await supabase.storage.from(bucket).upload(path, blob, {
+      upsert: false,
+      cacheControl: '31536000',
+      contentType: 'image/jpeg',
+    });
+    if (upErr) throw upErr;
+
+    const ref = `storage:site-assets/${path}`;
+    setHeroDraft((p) => ({ ...p, photos: [ref, ...(p.photos || [])] }));
+    return { path, ref };
   }
 
   return (
@@ -178,16 +174,16 @@ export function AdminHomeEditorPage() {
 
             <div className="mt-6 grid gap-4">
               <label className="grid gap-2">
-                <span className="text-sm text-slate-600">上传照片（会自动加入列表）</span>
+                <span className="text-sm text-slate-600">上传照片（先裁剪再上传，会自动加入列表）</span>
                 <Input
                   type="file"
                   accept="image/*"
                   multiple
                   disabled={uploading}
-                  onChange={(e) => uploadHeroPhotos(e.target.files)}
+                  onChange={(e) => startCropFlow(e.target.files)}
                 />
                 <span className="text-[12px] leading-[1.7] text-[color:var(--text-muted)]">
-                  需要 Supabase Storage 存储桶：`site-assets`（公开）。上传后记得「保存草稿/发布」。
+                  建议裁剪比例：20:7（桌面左图高度固定 420px，cover 裁切）。上传后记得「保存草稿/发布」。
                 </span>
                 <span className="text-[12px] leading-[1.7] text-[color:var(--text-muted)]">
                   {uploading ? '上传中…（上传成功后会自动把 storage:… 加进下面的照片列表）' : null}
@@ -268,6 +264,48 @@ export function AdminHomeEditorPage() {
             </div>
           </section>
         </div>
+
+        <ImageCropDialog
+          isOpen={cropOpen}
+          file={cropFile}
+          title="裁剪 Hero 照片"
+          aspectLabel="20:7（2400×840）"
+          outWidth={2400}
+          outHeight={840}
+          onCancel={() => {
+            setCropOpen(false);
+            setCropQueue([]);
+            setCropFile(null);
+          }}
+          onConfirm={async (crop) => {
+            setUploading(true);
+            setStatus(null);
+            try {
+              const { ref } = await uploadCroppedHeroImage({ file: cropFile, crop });
+              const remaining = cropQueue.slice(1);
+              setStatus({ type: 'success', message: `已裁剪并上传 1 张图片：${ref}（已加入照片列表）` });
+              if (remaining.length > 0) {
+                setCropQueue(remaining);
+                setCropFile(remaining[0]);
+                setCropOpen(true);
+              } else {
+                setCropOpen(false);
+                setCropQueue([]);
+                setCropFile(null);
+              }
+            } catch (err) {
+              setStatus({
+                type: 'error',
+                message: `上传失败：${err?.message ?? '未知错误'}。若提示 RLS：请在 Supabase SQL Editor 执行 migrations 里的 storage 策略（site-assets 写入权限）。`,
+              });
+              setCropOpen(false);
+              setCropQueue([]);
+              setCropFile(null);
+            } finally {
+              setUploading(false);
+            }
+          }}
+        />
       </AdminShell>
     </Page>
   );

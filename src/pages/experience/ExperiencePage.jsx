@@ -9,6 +9,7 @@ import { Page } from '../../design-system';
 import { EducationSection } from '../home/EducationSection';
 import { WorkSection } from '../home/WorkSection';
 import { projects } from '../projects/projectsData';
+import { useSiteBlock } from '../site-blocks/useSiteBlock';
 
 function toBullets(text) {
   if (!text) return [];
@@ -119,6 +120,11 @@ function ExperienceSection({ label, title, description, children, footer }) {
 }
 
 export function ExperiencePage() {
+  const { content: projectsBlock } = useSiteBlock('experience.projects', {
+    fallback: { items: projects },
+  });
+  const projectItems = Array.isArray(projectsBlock?.items) ? projectsBlock.items : projects;
+
   return (
     <Page
       title="Experience"
@@ -162,7 +168,7 @@ export function ExperiencePage() {
         }
       >
         <div className="space-y-4">
-          {projects.map((p) => (
+          {projectItems.map((p) => (
             <ProjectDetails key={p.id} project={p} />
           ))}
         </div>

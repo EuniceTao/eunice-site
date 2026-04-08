@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { educationEntries } from './educationData';
+import { useSiteBlock } from '../site-blocks/useSiteBlock';
 
 function DetailBlock({ courses, honors }) {
   return (
@@ -24,9 +25,14 @@ function DetailBlock({ courses, honors }) {
 }
 
 export function EducationSection() {
+  const { content } = useSiteBlock('experience.education', {
+    fallback: { entries: educationEntries },
+  });
+  const entries = Array.isArray(content?.entries) ? content.entries : educationEntries;
+
   return (
     <div className="grid divide-y divide-[color:var(--border)] md:grid-cols-2 md:divide-y-0">
-      {educationEntries.map((e, idx) => (
+      {entries.map((e, idx) => (
         <article
           key={e.id}
           tabIndex={0}

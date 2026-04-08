@@ -37,6 +37,7 @@ export function AdminShell({ children }) {
             <TabLink to="/admin/experience">Experience</TabLink>
             <TabLink to="/admin/notes">Notes</TabLink>
             <TabLink to="/admin/now">Now</TabLink>
+            <TabLink to="/admin/footer">Footer</TabLink>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">

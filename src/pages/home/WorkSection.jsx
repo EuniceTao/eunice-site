@@ -6,6 +6,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { workItems } from '../work/workData';
+import { useSiteBlock } from '../site-blocks/useSiteBlock';
 
 function tagsForWorkId(id) {
   if (id === 'beike') return ['产品设计', '运营落地'];
@@ -14,9 +15,14 @@ function tagsForWorkId(id) {
 }
 
 export function WorkSection({ showAllLink = true } = {}) {
+  const { content } = useSiteBlock('experience.work', {
+    fallback: { items: workItems },
+  });
+  const items = Array.isArray(content?.items) ? content.items : workItems;
+
   return (
     <div>
-      {workItems.map((w, idx) => (
+      {items.map((w, idx) => (
         <Link
           key={w.id}
           to={`/work/${w.id}`}

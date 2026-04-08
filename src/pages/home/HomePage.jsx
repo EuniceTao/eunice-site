@@ -11,9 +11,14 @@ import { HomeQuoteBand } from './HomeQuoteBand';
 import { ExperienceSection } from './ExperienceSection';
 import { MoreAboutMeSection } from './MoreAboutMeSection';
 import { projects } from '../projects/projectsData';
+import { useSiteBlock } from '../site-blocks/useSiteBlock';
 
 export function HomePage() {
-  const projectsPreview = projects.slice(0, 3);
+  const { content: projectsBlock } = useSiteBlock('experience.projects', {
+    fallback: { items: projects },
+  });
+  const allProjects = Array.isArray(projectsBlock?.items) ? projectsBlock.items : projects;
+  const projectsPreview = allProjects.slice(0, 3);
 
   return (
     <Page

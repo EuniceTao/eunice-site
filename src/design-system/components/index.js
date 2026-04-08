@@ -12,3 +12,4 @@ export * from './Surface';
 export * from './Badge';
 export * from './Sheet';
 export * from './ConfirmDialog';
+export * from './ImageCropDialog';
