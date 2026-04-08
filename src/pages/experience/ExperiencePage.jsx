@@ -125,15 +125,24 @@ export function ExperiencePage() {
   });
   const projectItems = Array.isArray(projectsBlock?.items) ? projectsBlock.items : projects;
 
+  const { content: pageCopy } = useSiteBlock('copy.experience', {
+    fallback: {
+      pageDescriptionMd: '学习、工作与项目：可先扫读，再点开看细节。',
+      educationDescriptionMd: '我如何建立知识结构，以及在校学习里最有价值的训练。',
+      workDescriptionMd: '按经历展开：先看一句总结，点进去看背景、动作与结果。',
+      projectsDescriptionMd: '完整作品集：背景 → 角色 → 结果。',
+    },
+  });
+
   return (
     <Page
       title="Experience"
-      description="学习、工作与项目：可先扫读，再点开看细节。"
+      description={pageCopy?.pageDescriptionMd || '学习、工作与项目：可先扫读，再点开看细节。'}
     >
       <ExperienceSection
         label="EDUCATION"
         title="学习"
-        description="我如何建立知识结构，以及在校学习里最有价值的训练。"
+        description={pageCopy?.educationDescriptionMd || '我如何建立知识结构，以及在校学习里最有价值的训练。'}
       >
         <EducationSection />
       </ExperienceSection>
@@ -141,7 +150,7 @@ export function ExperiencePage() {
       <ExperienceSection
         label="WORK"
         title="工作"
-        description="按经历展开：先看一句总结，点进去看背景、动作与结果。"
+        description={pageCopy?.workDescriptionMd || '按经历展开：先看一句总结，点进去看背景、动作与结果。'}
         footer={
           <Link
             to="/work"
@@ -157,7 +166,7 @@ export function ExperiencePage() {
       <ExperienceSection
         label="PROJECTS"
         title="项目"
-        description="完整作品集：背景 → 角色 → 结果。"
+        description={pageCopy?.projectsDescriptionMd || '完整作品集：背景 → 角色 → 结果。'}
         footer={
           <Link
             to="/projects"

@@ -6,8 +6,12 @@
 import React from 'react';
 import { Container } from './Container';
 import { cn } from '../utils/cn';
+import { Markdown } from '../../pages/blog/Markdown';
 
 export function Page({ title, description, children, className }) {
+  const desc = String(description || '').trim(); // 描述（支持 Markdown）
+  const isMarkdown = Boolean(desc) && /[\n*_`#[\]()>-]/.test(desc);
+
   return (
     <main className={cn('py-12 md:py-16', className)}>
       <Container>
@@ -20,7 +24,7 @@ export function Page({ title, description, children, className }) {
             )}
             {description && (
               <p className="mt-3 max-w-prose text-base leading-relaxed text-slate-500">
-                {description}
+                {isMarkdown ? <Markdown>{desc}</Markdown> : desc}
               </p>
             )}
           </header>
