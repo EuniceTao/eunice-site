@@ -23,6 +23,7 @@ import { AdminNotesPage } from './pages/admin/AdminNotesPage';
 import { AdminHomeEditorPage } from './pages/admin/AdminHomeEditorPage';
 import { AdminExperienceEditorPage } from './pages/admin/AdminExperienceEditorPage';
 import { AdminFooterEditorPage } from './pages/admin/AdminFooterEditorPage';
+import { AdminBlocksEditorPage } from './pages/admin/AdminBlocksEditorPage';
 import { ContactPage } from './pages/contact/ContactPage';
 import { NotFoundPage } from './pages/not-found/NotFoundPage';
 
@@ -47,6 +48,7 @@ function App() {
           <Route path="/admin/now" element={<AdminNowPage />} />
           <Route path="/admin/notes" element={<AdminNotesPage />} />
           <Route path="/admin/footer" element={<AdminFooterEditorPage />} />
+          <Route path="/admin/blocks" element={<AdminBlocksEditorPage />} />
           <Route path="/contact" element={<ContactPage />} />
         </Route>
 

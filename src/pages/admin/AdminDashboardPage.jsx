@@ -60,6 +60,11 @@ export function AdminDashboardPage() {
             desc="编辑此刻（日记/备忘录），发布后首页与 /now 自动更新。"
             onClick={() => navigate('/admin/now')}
           />
+          <EntryCard
+            title="Blocks"
+            desc="通用编辑器：编辑任意内容块 key（草稿/发布），用于补齐所有可运营内容。"
+            onClick={() => navigate('/admin/blocks')}
+          />
         </div>
       </AdminShell>
     </Page>

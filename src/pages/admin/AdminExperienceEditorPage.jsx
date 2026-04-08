@@ -42,6 +42,12 @@ export function AdminExperienceEditorPage() {
   const [workText, setWorkText] = useState(pretty(DEFAULT_WORK));
   const [projectsText, setProjectsText] = useState(pretty(DEFAULT_PROJECTS));
 
+  const [publishedPreview, setPublishedPreview] = useState({
+    education: pretty(DEFAULT_EDUCATION),
+    work: pretty(DEFAULT_WORK),
+    projects: pretty(DEFAULT_PROJECTS),
+  });
+
   useEffect(() => {
     if (!loading && !session) navigate('/admin', { replace: true });
   }, [loading, session, navigate]);
@@ -61,6 +67,11 @@ export function AdminExperienceEditorPage() {
         if (a?.draft && Object.keys(a.draft).length) setEducationText(pretty(a.draft));
         if (b?.draft && Object.keys(b.draft).length) setWorkText(pretty(b.draft));
         if (c?.draft && Object.keys(c.draft).length) setProjectsText(pretty(c.draft));
+        setPublishedPreview({
+          education: pretty(a?.published && Object.keys(a.published).length ? a.published : DEFAULT_EDUCATION),
+          work: pretty(b?.published && Object.keys(b.published).length ? b.published : DEFAULT_WORK),
+          projects: pretty(c?.published && Object.keys(c.published).length ? c.published : DEFAULT_PROJECTS),
+        });
       } catch {
         // defaults already set
       }
@@ -82,11 +93,12 @@ export function AdminExperienceEditorPage() {
 
   const canSave = parsed.education.ok && parsed.work.ok && parsed.projects.ok;
 
-  async function saveDraft() {
+  async function saveDraft({ throwOnError = false } = {}) {
     setStatus(null);
     if (!canSave) {
       setStatus({ type: 'error', message: '请先修正 JSON 格式错误，再保存。' });
-      return;
+      if (throwOnError) throw new Error('JSON 格式错误');
+      return false;
     }
     setSaving(true);
     try {
@@ -96,8 +108,11 @@ export function AdminExperienceEditorPage() {
         saveSiteBlockDraft('experience.projects', parsed.projects.value),
       ]);
       setStatus({ type: 'success', message: '草稿已保存。' });
+      return true;
     } catch (err) {
       setStatus({ type: 'error', message: `保存失败：${err?.message ?? '未知错误'}` });
+      if (throwOnError) throw err;
+      return false;
     } finally {
       setSaving(false);
     }
@@ -107,12 +122,23 @@ export function AdminExperienceEditorPage() {
     setStatus(null);
     setSaving(true);
     try {
-      await saveDraft();
+      await saveDraft({ throwOnError: true });
       await Promise.all([
         publishSiteBlock('experience.education'),
         publishSiteBlock('experience.work'),
         publishSiteBlock('experience.projects'),
       ]);
+      // 发布后刷新一次 published 预览，避免“以为发布了但其实没更新”的错觉
+      const [a, b, c] = await Promise.all([
+        getSiteBlockRow('experience.education'),
+        getSiteBlockRow('experience.work'),
+        getSiteBlockRow('experience.projects'),
+      ]);
+      setPublishedPreview({
+        education: pretty(a?.published && Object.keys(a.published).length ? a.published : DEFAULT_EDUCATION),
+        work: pretty(b?.published && Object.keys(b.published).length ? b.published : DEFAULT_WORK),
+        projects: pretty(c?.published && Object.keys(c.published).length ? c.published : DEFAULT_PROJECTS),
+      });
       setStatus({ type: 'success', message: '已发布。' });
     } catch (err) {
       setStatus({ type: 'error', message: `发布失败：${err?.message ?? '未知错误'}` });
@@ -147,16 +173,22 @@ export function AdminExperienceEditorPage() {
           <section className="border border-[color:var(--border)] bg-white p-7">
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#999999]">EDUCATION</p>
             <Textarea rows={14} value={educationText} onChange={(e) => setEducationText(e.target.value)} />
+            <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.25em] text-[#BBBBBB]">PUBLISHED PREVIEW</p>
+            <Textarea rows={8} value={publishedPreview.education} readOnly />
           </section>
 
           <section className="border border-[color:var(--border)] bg-white p-7">
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#999999]">WORK</p>
             <Textarea rows={14} value={workText} onChange={(e) => setWorkText(e.target.value)} />
+            <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.25em] text-[#BBBBBB]">PUBLISHED PREVIEW</p>
+            <Textarea rows={8} value={publishedPreview.work} readOnly />
           </section>
 
           <section className="border border-[color:var(--border)] bg-white p-7">
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#999999]">PROJECTS</p>
             <Textarea rows={14} value={projectsText} onChange={(e) => setProjectsText(e.target.value)} />
+            <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.25em] text-[#BBBBBB]">PUBLISHED PREVIEW</p>
+            <Textarea rows={8} value={publishedPreview.projects} readOnly />
           </section>
         </div>
       </AdminShell>
