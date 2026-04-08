@@ -14,6 +14,16 @@ function toPercent(n) {
   return `${Math.round(n * 100)}%`;
 }
 
+function loadImageSize(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.decoding = 'async';
+    img.onload = () => resolve({ w: img.naturalWidth || img.width, h: img.naturalHeight || img.height });
+    img.onerror = () => reject(new Error('图片加载失败'));
+    img.src = url;
+  });
+}
+
 export function ImageCropDialog({
   isOpen,
   file,
@@ -32,13 +42,30 @@ export function ImageCropDialog({
 
   const previewRef = React.useRef(null);
   const [objectUrl, setObjectUrl] = React.useState('');
+  const [imgSize, setImgSize] = React.useState({ w: 0, h: 0 });
 
   React.useEffect(() => {
     if (!isOpen || !file) return;
     const url = URL.createObjectURL(file);
     setObjectUrl(url);
+    setImgSize({ w: 0, h: 0 });
     return () => URL.revokeObjectURL(url);
   }, [isOpen, file]);
+
+  React.useEffect(() => {
+    if (!isOpen || !objectUrl) return;
+    let cancelled = false;
+    loadImageSize(objectUrl)
+      .then((s) => {
+        if (!cancelled) setImgSize(s);
+      })
+      .catch(() => {
+        if (!cancelled) setImgSize({ w: 0, h: 0 });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, objectUrl]);
 
   React.useEffect(() => {
     if (!isOpen) return;
@@ -52,26 +79,35 @@ export function ImageCropDialog({
   function onPointerDown(e) {
     if (!previewRef.current) return;
     previewRef.current.setPointerCapture?.(e.pointerId);
+    const rect = previewRef.current.getBoundingClientRect();
+    const pw = rect.width;
+    const ph = rect.height;
     draggingRef.current = {
       startX: e.clientX,
       startY: e.clientY,
       startCenterX01: centerX01,
       startCenterY01: centerY01,
+      pw,
+      ph,
     };
   }
 
   function onPointerMove(e) {
     if (!draggingRef.current || !previewRef.current) return;
-    const rect = previewRef.current.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
+    if (!draggingRef.current.pw || !draggingRef.current.ph) return;
+    if (!imgSize.w || !imgSize.h) return;
 
     const dx = e.clientX - draggingRef.current.startX;
     const dy = e.clientY - draggingRef.current.startY;
 
-    // 经验映射：拖动距离映射到 center 的变化；zoom 越大，拖动越“敏感”一点
-    const scaleFactor = 1 / clamp(Number(zoom) || 1, 1, 3);
-    const nextX = draggingRef.current.startCenterX01 - (dx / rect.width) * 0.9 * scaleFactor;
-    const nextY = draggingRef.current.startCenterY01 - (dy / rect.height) * 0.9 * scaleFactor;
+    const z = clamp(Number(zoom) || 1, 1, 5);
+    const baseScale = Math.max(draggingRef.current.pw / imgSize.w, draggingRef.current.ph / imgSize.h);
+    const scaledW = imgSize.w * baseScale * z;
+    const scaledH = imgSize.h * baseScale * z;
+
+    // dx>0 表示手往右拖 => 画面往右移 => centerX 应该更靠左（值变小）
+    const nextX = draggingRef.current.startCenterX01 - dx / scaledW;
+    const nextY = draggingRef.current.startCenterY01 - dy / scaledH;
 
     setCenterX01(clamp(nextX, 0, 1));
     setCenterY01(clamp(nextY, 0, 1));
@@ -86,6 +122,17 @@ export function ImageCropDialog({
   const outAspect = outWidth / outHeight;
   const previewW = 600;
   const previewH = Math.round(previewW / outAspect);
+
+  const z = clamp(Number(zoom) || 1, 1, 5);
+  const baseScale = imgSize.w && imgSize.h ? Math.max(previewW / imgSize.w, previewH / imgSize.h) : 1;
+  const scaledW = imgSize.w * baseScale * z;
+  const scaledH = imgSize.h * baseScale * z;
+  const cx = clamp(Number(centerX01) || 0.5, 0, 1) * scaledW;
+  const cy = clamp(Number(centerY01) || 0.5, 0, 1) * scaledH;
+  let left = previewW / 2 - cx;
+  let top = previewH / 2 - cy;
+  left = clamp(left, previewW - scaledW, 0);
+  top = clamp(top, previewH - scaledH, 0);
 
   return (
     <>
@@ -131,18 +178,18 @@ export function ImageCropDialog({
                 onPointerUp={onPointerUp}
                 onPointerCancel={onPointerUp}
               >
-                {objectUrl ? (
+                {objectUrl && imgSize.w && imgSize.h ? (
                   <img
                     src={objectUrl}
                     alt="crop preview"
                     draggable={false}
-                    className="absolute inset-0 h-full w-full"
+                    className="absolute"
                     style={{
-                      objectFit: 'cover',
-                      // 用 zoom + center 做一个“可控 cover”：缩放后再平移
-                      transform: `scale(${zoom}) translate(${(0.5 - centerX01) * 100}%, ${(0.5 - centerY01) * 100}%)`,
-                      transformOrigin: 'center',
-                      willChange: 'transform',
+                      width: `${scaledW}px`,
+                      height: `${scaledH}px`,
+                      left: `${left}px`,
+                      top: `${top}px`,
+                      willChange: 'left, top, width, height',
                       userSelect: 'none',
                       pointerEvents: 'none',
                     }}
