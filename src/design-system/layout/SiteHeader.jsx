@@ -12,7 +12,7 @@ import { publicUrl } from '../../lib/publicUrl';
 const navItems = [
   { to: '/', label: 'Home' }, // 首页
   { to: '/experience', label: 'Experience' }, // 经验
-  { to: '/blog', label: 'More' }, // 关于我区块入口（笔记等）
+  { to: '/more', label: 'More' }, // Notes + Now 聚合入口
   { to: '/contact', label: 'Contact' }, // 联系
 ];
 

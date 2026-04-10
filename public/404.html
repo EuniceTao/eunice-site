@@ -5,19 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Redirecting…</title>
     <script>
-      // GitHub Pages SPA redirect (keeps clean URLs with BrowserRouter)
-      // Inspired by the "spa-github-pages" technique.
       (function () {
         var l = window.location;
-        var segmentCount = 1; // /<repo>/
-        var path = l.pathname.split('/').slice(0, 1 + segmentCount).join('/');
-        var rest = l.pathname.split('/').slice(1 + segmentCount).join('/');
-        var redirect =
-          path +
-          '/?/' +
-          rest +
-          (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-          l.hash;
+        // GitHub Pages SPA redirect for BrowserRouter.
+        // Works for both:
+        // - Custom domain root: https://eunicetao.space/<route>
+        // - Project pages path: https://eunicetao.github.io/eunice-site/<route>
+        //
+        // Avoid redirect loops: if already redirected (p=), do nothing.
+        if (l.search && l.search.indexOf('p=') !== -1) return;
+
+        var repoName = 'eunice-site';
+        var isProjectPages =
+          l.pathname === '/' + repoName || l.pathname.indexOf('/' + repoName + '/') === 0;
+
+        // Redirect target should be the site root for the current hosting mode.
+        var baseRoot = isProjectPages ? '/' + repoName : '';
+
+        // Preserve original path and query via encoded params.
+        var p = encodeURIComponent(l.pathname);
+        var q = encodeURIComponent(l.search || '');
+        var redirect = baseRoot + '/?p=' + p + '&q=' + q + l.hash;
+
         l.replace(redirect);
       })();
     </script>

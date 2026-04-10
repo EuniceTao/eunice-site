@@ -16,6 +16,7 @@ import { WorkDetailPage } from './pages/work/WorkDetailPage';
 import { BlogIndexPage } from './pages/blog/BlogIndexPage';
 import { BlogPostPage } from './pages/blog/BlogPostPage';
 import { NowPage } from './pages/now/NowPage';
+import { MorePage } from './pages/more/MorePage';
 import { AdminLoginPage } from './pages/admin/AdminLoginPage';
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 import { AdminNowPage } from './pages/admin/AdminNowPage';
@@ -38,6 +39,7 @@ function App() {
           <Route path="/work" element={<WorkIndexPage />} />
           <Route path="/work/:id" element={<WorkDetailPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/more" element={<MorePage />} />
           <Route path="/blog" element={<BlogIndexPage />} />
           <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/now" element={<NowPage />} />

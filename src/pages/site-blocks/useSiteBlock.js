@@ -11,6 +11,7 @@ export function useSiteBlock(key, { preferDraft = false, fallback = null } = {})
   const { session } = useAdminSession();
   const [row, setRow] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [hasTriedRemote, setHasTriedRemote] = useState(false);
 
   const canReadDraft = Boolean(session?.user);
   const mode = preferDraft && canReadDraft ? 'draft' : 'published';
@@ -32,8 +33,10 @@ export function useSiteBlock(key, { preferDraft = false, fallback = null } = {})
         if (error) throw error;
         if (cancelled) return;
         setRow(data ?? null);
+        setHasTriedRemote(true);
       } catch {
         // fallback handled below
+        if (!cancelled) setHasTriedRemote(true);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -46,9 +49,13 @@ export function useSiteBlock(key, { preferDraft = false, fallback = null } = {})
   }, [key]);
 
   const content = useMemo(() => {
+    // 关键：避免“先显示默认文案，再闪成 Admin 编辑版”
+    // - 有 supabase 且远程尚未尝试：先返回 null（页面可以选择不渲染/渲染骨架）
+    // - 远程失败或没有数据：再 fallback
+    if (supabase && !hasTriedRemote) return null;
     if (!row) return fallback;
     return row[mode] ?? fallback;
-  }, [row, mode, fallback]);
+  }, [row, mode, fallback, hasTriedRemote]);
 
   return { row, content, loading, mode };
 }

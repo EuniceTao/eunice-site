@@ -34,8 +34,6 @@ function BulletList({ items }) {
 }
 
 function NowEntry({ entry, defaultOpen = false }) {
-  const preview = entry.body?.[0] ?? '';
-
   return (
     <details
       className="group border border-[color:var(--border)] bg-white px-7 py-6 open:border-[#111111]"
@@ -49,11 +47,6 @@ function NowEntry({ entry, defaultOpen = false }) {
             <h3 className="text-[18px] font-medium leading-[1.5] text-[color:var(--text)]">
               {entry.title}
             </h3>
-            {preview ? (
-              <p className="mt-3 text-[14px] font-light leading-[1.8] text-[color:var(--text-muted)]">
-                {preview}
-              </p>
-            ) : null}
           </div>
 
           <span className="shrink-0 text-[#BBBBBB] transition-transform group-open:rotate-90">

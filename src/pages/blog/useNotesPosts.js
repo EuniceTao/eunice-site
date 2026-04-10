@@ -7,6 +7,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { posts as localPosts } from './blogData';
 
+const NOTES_CACHE_KEY = 'cache:notes_posts:v1';
+
 function normalizeRow(row) {
   const date =
     typeof row.date === 'string'
@@ -27,7 +29,17 @@ function normalizeRow(row) {
 }
 
 export function useNotesPosts({ includeDrafts = false, slug } = {}) {
-  const [posts, setPosts] = useState(localPosts);
+  const [posts, setPosts] = useState(() => {
+    try {
+      const cached = JSON.parse(localStorage.getItem(NOTES_CACHE_KEY) || 'null');
+      if (Array.isArray(cached) && cached.length > 0) return cached;
+    } catch {
+      // ignore
+    }
+    // 关键：避免先渲染本地默认内容导致“闪一下”
+    // 若能连 supabase，先空；否则再 fallback 本地
+    return supabase ? [] : localPosts;
+  });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -52,10 +64,18 @@ export function useNotesPosts({ includeDrafts = false, slug } = {}) {
 
         if (Array.isArray(data) && data.length > 0) {
           const normalized = data.map(normalizeRow);
-          setPosts(slug ? normalized : normalized);
+          setPosts(normalized);
+          try {
+            localStorage.setItem(NOTES_CACHE_KEY, JSON.stringify(normalized));
+          } catch {
+            // ignore
+          }
+        } else if (!slug) {
+          // 远程为空时，前台页不强行回退到本地默认（避免闪）；保持当前即可
         }
       } catch {
         // fallback stays local
+        if (!cancelled && posts.length === 0) setPosts(localPosts);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -65,6 +85,7 @@ export function useNotesPosts({ includeDrafts = false, slug } = {}) {
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [includeDrafts, slug]);
 
   const post = useMemo(() => {

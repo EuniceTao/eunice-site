@@ -9,14 +9,23 @@
     <script>
       (function () {
         var l = window.location;
-        if (l.search && l.search.startsWith('?/')) {
-          var decoded = l.search
-            .slice(2)
-            .split('&')
-            .map(function (s) { return s.replace(/~and~/g, '&'); })
-            .join('&');
-          window.history.replaceState(null, '', l.pathname + decoded + l.hash);
+        if (!l.search) return;
+
+        var params = new URLSearchParams(l.search);
+        if (!params.has('p')) return;
+
+        var p = params.get('p') || '';
+        var q = params.get('q') || '';
+
+        try {
+          p = decodeURIComponent(p);
+          q = decodeURIComponent(q);
+        } catch {
+          // ignore decode errors; best-effort cleanup below
         }
+
+        // `q` includes leading "?" when present.
+        window.history.replaceState(null, '', p + (q || '') + l.hash);
       })();
     </script>
   </head>
