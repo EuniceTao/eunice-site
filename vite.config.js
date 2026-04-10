@@ -7,9 +7,9 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
+// 自定义域名（如 eunicetao.space）走根路径 `/`；仅当仍用 github.io/eunice-site/ 时设 BUILD_BASE=/eunice-site/
 export default defineConfig({
-  // GitHub Pages 子路径部署（/eunice-site/）
-  base: '/eunice-site/',
+  base: process.env.BUILD_BASE || '/',
   plugins: [
     react(),
     tailwindcss(),
