@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { nowEntries as localNowEntries } from './nowData';
 
-const NOW_CACHE_KEY = 'cache:now_entries:v1';
+const NOW_CACHE_KEY = 'cache:now_entries:v2';
 
 function normalizeRow(row) {
   const body = Array.isArray(row.body)

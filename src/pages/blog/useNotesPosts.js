@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { posts as localPosts } from './blogData';
 
-const NOTES_CACHE_KEY = 'cache:notes_posts:v1';
+const NOTES_CACHE_KEY = 'cache:notes_posts:v2';
 
 function normalizeRow(row) {
   const date =
