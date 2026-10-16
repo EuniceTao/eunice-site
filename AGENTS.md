@@ -37,7 +37,7 @@
 
 - 用户已批准 Q 版静态模型入屋。`scene/cats/RoomCats.jsx` 加载 `public/cats/q-blue-white.glb` 与 `q-tabby.glb`，保持审阅稿外形。
 - 蓝白放在沙发座面，虎斑放在地毯；按模型包围盒对齐爪底，使用 0.4 倍缩放。
-- 用户已授权加动作。`catIdlePose.js` / `createIdleRig.js` 实现呼吸、眨眼、转头、摆尾和轻量四足步态。`locomotion/standingPose.js` 生成同拓扑四足站姿与法线，抬起腹部及骨盆并锚定后爪，避免坐姿拖行。蓝白仍在沙发休息；虎斑由 `catWander.js` 控制起身、转向、慢走、坐下和停留，复用 `catNavigation` 的地面节点与障碍边界，只允许地面邻接边。旧 `CatModel`、`catMotion` 和跳跃采样不接入。
+- 用户已授权加动作。`catIdlePose.js` / `createIdleRig.js` 实现呼吸、眨眼、转头、摆尾和轻量四足步态。`locomotion/standingPose.js` 生成同拓扑四足站姿与法线，抬起腹部及骨盆并锚定后爪，避免坐姿拖行。`locomotion/catTail.js` 单独生成坐站尾巴曲线，尾根接骨盆，中段与后腿分离；不再将贴地卷尾整体内收。蓝白仍在沙发休息；虎斑由 `catWander.js` 控制起身、转向、慢走、坐下和停留，复用 `catNavigation` 的地面节点与障碍边界，只允许地面邻接边。旧 `CatModel`、`catMotion` 和跳跃采样不接入。
 - `useCatActivity` 在页面隐藏、离开视口、打开空间或手动暂停时停止帧调度；动作使用活动时间，恢复时不跳到后台累计时间。
 - 模型独立 Suspense，使用已有方向光阴影；接触阴影随需求帧刷新，避免移动后留下烘焙残影；合照与键盘相册入口继续保留，移动端沿用静态页面策略。
 - GLB 只增补眼睛/尾巴节点名，原模型几何与材质不变。动画网格和材质独立克隆；释放时不可销毁 useGLTF 缓存。可见材质与深度阴影共享动作参数。

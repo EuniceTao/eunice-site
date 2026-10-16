@@ -1,6 +1,7 @@
 /** 为确认过的静态网格添加原地动作与地面步态；独立克隆几何和材质，不改 GLTF 缓存。 */
 import { Box3, Group, Mesh, Vector3, MeshDepthMaterial, RGBADepthPacking } from 'three';
 import { addStandingPose } from './locomotion/standingPose.js';
+import { createCatTail } from './locomotion/catTail.js';
 
 export function createIdleRig(scene) {
   scene.updateMatrixWorld(true);
@@ -12,11 +13,11 @@ export function createIdleRig(scene) {
   };
   scene.traverse((node) => {
     if (!node.isMesh) return;
-    const geometry = node.geometry.clone().applyMatrix4(node.matrixWorld);
+    const tail = node.name.startsWith('cat-tail');
+    const geometry = tail ? createCatTail(node.name === 'cat-tail-tip') : node.geometry.clone().applyMatrix4(node.matrixWorld);
     const material = node.material.clone();
     const eye = node.parent.name.startsWith('cat-eye-');
-    const tail = node.name.startsWith('cat-tail');
-    addStandingPose(geometry, tail);
+    if (!tail) addStandingPose(geometry, false);
     const eyeY = eye ? new Box3().setFromObject(node.parent).getCenter(new Vector3()).y : 0;
     material.onBeforeCompile = (shader) => {
       Object.assign(shader.uniforms, uniforms, { uCatEye: { value: eye ? 1 : 0 }, uCatEyeY: { value: eyeY }, uCatIsTail: { value: tail ? 1 : 0 } });
@@ -52,12 +53,12 @@ export function createIdleRig(scene) {
         if (uCatIsTail > 0.5) transformed.x += uCatTail * smoothstep(-0.25, 0.22, position.z);
       `);
     };
-    material.customProgramCacheKey = () => 'q-cat-ground-v3';
+    material.customProgramCacheKey = () => 'q-cat-ground-v4';
     const mesh = new Mesh(geometry, material);
     mesh.name = node.name;
     mesh.customDepthMaterial = new MeshDepthMaterial({ depthPacking: RGBADepthPacking });
     mesh.customDepthMaterial.onBeforeCompile = material.onBeforeCompile;
-    mesh.customDepthMaterial.customProgramCacheKey = () => 'q-cat-ground-depth-v3';
+    mesh.customDepthMaterial.customProgramCacheKey = () => 'q-cat-ground-depth-v4';
     // 头部轮廓仅小幅移动；脚底接触阴影由身体和地面保持稳定。
     mesh.castShadow = true; mesh.receiveShadow = true;
     geometry.computeBoundingSphere(); geometry.boundingSphere.radius += 0.55;
