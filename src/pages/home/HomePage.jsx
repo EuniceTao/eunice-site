@@ -89,7 +89,7 @@ export function HomePage() {
 
   const roomView = canExplore3D ? (
     <React.Suspense fallback={<div className="room-scene-loading">正在点亮小屋…</div>}>
-      <RoomScene paused={Boolean(spaceId || activeItem)} items={roomItems} onOpen={openItem} onEnterSpace={openSpace} />
+      <RoomScene items={roomItems} onOpen={openItem} onEnterSpace={openSpace} />
     </React.Suspense>
   ) : (
     <RoomMobilePath items={roomItems} onOpen={openItem} />

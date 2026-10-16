@@ -7,7 +7,7 @@ import { RoomArchitecture } from './RoomArchitecture';
 import { RoomContentObjects } from './RoomContentObjects';
 import { createRoomMaterials } from './furniture/materials';
 
-export function RoomWorld({ items, selectedId, onSelect, htmlPortal, onOpenCat, catsActive }) {
+export function RoomWorld({ items, selectedId, onSelect, htmlPortal, onOpenCat }) {
   const materials = React.useMemo(() => createRoomMaterials(), []);
   React.useEffect(() => () => materials.dispose(), [materials]);
   return (
@@ -27,7 +27,7 @@ export function RoomWorld({ items, selectedId, onSelect, htmlPortal, onOpenCat, 
       </Environment>
       <RoomArchitecture materials={materials} />
       <RoomContentObjects htmlPortal={htmlPortal} items={items} materials={materials} selectedId={selectedId} onSelect={onSelect} />
-      <React.Suspense fallback={null}><RoomCats active={catsActive} onOpen={onOpenCat} /></React.Suspense>
+      <React.Suspense fallback={null}><RoomCats onOpen={onOpenCat} /></React.Suspense>
       <ContactShadows position={[0, 0.023, 0]} frames={Infinity} resolution={256} scale={9} opacity={0.36} blur={2.4} far={2.5} color={C.shadow} />
     </group>
   );

@@ -5,21 +5,18 @@ import { RoomSceneControls } from '../../../design-system/room/RoomSceneControls
 import { RoomFocusCard } from '../../../design-system/room/RoomFocusCard';
 import '../../../design-system/room/room-explore.css';
 import { RoomCanvasFallback } from './RoomCanvasFallback';
-import { useCatActivity } from './scene/cats/useCatActivity';
 import { RoomWorld } from './scene/RoomWorld';
 import { RoomCamera } from './scene/RoomCamera';
 import { OVERVIEW } from './scene/roomNavigation';
 import { ROOM_PALETTE } from '../../../design-system/room/roomPalette';
 
-export function RoomScene({ items, onOpen, onEnterSpace, paused = false }) {
+export function RoomScene({ items, onOpen, onEnterSpace }) {
   const [selectedId, setSelectedId] = React.useState(null);
   const cameraRef = React.useRef(null);
   const htmlPortal = React.useRef(null);
   const entryTimerRef = React.useRef(null);
   React.useEffect(() => () => window.clearTimeout(entryTimerRef.current), []);
   const shellRef = React.useRef(null);
-  const [catsPaused, setCatsPaused] = React.useState(false);
-  const catsActive = useCatActivity(shellRef, paused || catsPaused);
   const returnFocusRef = React.useRef(null);
   const selectedItem = items.find((item) => item.id === selectedId);
 
@@ -104,14 +101,14 @@ export function RoomScene({ items, onOpen, onEnterSpace, paused = false }) {
           <color attach="background" args={[ROOM_PALETTE.sky]} />
           <fog attach="fog" args={[ROOM_PALETTE.sky, 15, 40]} />
           <React.Suspense fallback={null}>
-            <RoomWorld catsActive={catsActive} onOpenCat={openCat} htmlPortal={htmlPortal} items={items} selectedId={selectedId} onSelect={select} />
+            <RoomWorld onOpenCat={openCat} htmlPortal={htmlPortal} items={items} selectedId={selectedId} onSelect={select} />
             <RoomCamera ref={cameraRef} />
           </React.Suspense>
         </Canvas>
         {selectedItem && !selectedItem.space && <RoomFocusCard item={selectedItem} onClose={close} />}
         <RoomSceneControls items={items} selectedId={selectedId} onSelect={select} onZoom={(amount) => cameraRef.current?.zoom(amount)} onReset={reset} />
       </div>
-      <div className="room-cat-tools"><span>小屋的两位室友</span><button type="button" onClick={() => openCat('cat-blue')}>英短蓝白 · 相册</button><button type="button" onClick={() => openCat('cat-tabby')}>浅棕虎斑 · 相册</button><button type="button" aria-pressed={catsPaused} onClick={() => setCatsPaused((value) => !value)}>{catsPaused ? '继续猫咪动作' : '暂停猫咪动作'}</button></div>
+      <div className="room-cat-tools"><span>小屋的两位室友</span><button type="button" onClick={() => openCat('cat-blue')}>英短蓝白 · 相册</button><button type="button" onClick={() => openCat('cat-tabby')}>浅棕虎斑 · 相册</button></div>
     </div>
   );
 }
