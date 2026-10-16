@@ -105,8 +105,8 @@ export function createRoomItems({ latestNow, latestNote }) {
     },
     {
       id: 'experiments', index: '07', kind: 'exhibit', space: true,
-      objectLabel: '作品角 / PLAY', label: '我的小实验', eyebrow: 'PLAY / PERSONAL PROJECTS',
-      title: '吵吵艺术馆', description: '自己做的小游戏，还有那些被我做出来的想法。',
+      objectLabel: '主墙 / 作品墙', label: '作品墙', eyebrow: 'PLAY / PERSONAL PROJECTS',
+      title: '我的作品墙', description: '自己做的小游戏，还有那些被我做出来的想法。',
       detail: '我的小游戏与创作实验。', cta: '进入作品空间',
       image: publicUrl('hero-2.png'),
     },

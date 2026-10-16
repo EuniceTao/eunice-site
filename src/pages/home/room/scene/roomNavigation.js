@@ -8,7 +8,7 @@ export const FOCUS_VIEWS = {
   work: { position: [-0.55, 1.6, -0.55], target: [-1.7, 1.03, -2.62] },
   notes: { position: [0.55, 1.65, 1.7], target: [-1.12, 0.51, 0.44] },
   about: { position: [-1.55, 1.4, 2.8], target: [-2.8, 1.02, 1.85] },
-  experiments: { position: [1.3, 1.6, -1.3], target: [0.65, 1.7, -3.2] },
+  experiments: { position: [-1.55, 1.96, 0.1], target: [-3.93, 1.96, 0.1] },
   experience: { position: [1.35, 1.13, 2.83], target: [3.59, 0.5, 2.0] },
   contact: { position: [1.45, 1.7, 2.53], target: [3.53, 1.09, 1.61] },
 };

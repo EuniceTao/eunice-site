@@ -1,18 +1,18 @@
-/** 个人创作展示：只使用已确认的名称与链接，不虚构游戏画面和玩法。 */
+/** 作品墙的完整展览；与房间挂画共用清单，作品外链保留原目标。 */
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
-export const ART_GAME_URL = 'https://app-moma.ke.com/7e041044-98ae-45c6-b51c-5da5489c2c2a';
+import { PERSONAL_ARTWORKS } from '../room/artworks';
+export { ART_GAME_URL } from '../room/artworks';
 
 export function ExperimentSpace() {
-  return (
-    <section className="experiment-space">
-      <header><p className="space-kicker">EUNICE’S PLAYROOM / 001</p><h1>一些想法，<br /><em>被我做了出来。</em></h1><p>我的小游戏与创作实验。</p></header>
-      <article className="experiment-feature">
-        <div className="experiment-title"><span>一个由 Eunice 制作的小游戏</span><h2>吵吵<br />艺术馆<span>。</span></h2><p>CHAO CHAO / ART GALLERY</p></div>
-        <div className="experiment-copy"><p className="space-kicker">PERSONAL PROJECT · 01</p><h3>欢迎来到<br />吵吵艺术馆。</h3><p>这是我自己做的小游戏。点下面的入口，就可以进去玩。</p>
-          <a className="space-primary-link" href={ART_GAME_URL} target="_blank" rel="noopener noreferrer">进去玩 <ArrowUpRight size={20} /></a><small>在新标签页打开，小屋会留在这里。</small>
-        </div>
-      </article>
-    </section>
-  );
+  return <section className="experiment-space">
+    <header><p className="space-kicker">Eunice 的作品墙</p><h1>我做的，<br />都挂在这里。</h1><p>小游戏、作品集，以及陆续做出来的新想法。</p></header>
+    {PERSONAL_ARTWORKS.map(artwork => <article className="experiment-feature" key={artwork.id}>
+      <div className="experiment-title"><span>{artwork.kind}</span><h2>{artwork.titleLines.map((line, i) => <React.Fragment key={line}>{i > 0 && <br />}{line}</React.Fragment>)}</h2><p>Eunice 的作品</p></div>
+      <div className="experiment-copy"><h3>{artwork.title}</h3><p>{artwork.description}</p>
+        <a className="space-primary-link" href={artwork.url} target="_blank" rel="noopener noreferrer">{artwork.action} <ArrowUpRight size={20} /></a><small>在新标签页打开，小屋会留在这里。</small>
+      </div>
+    </article>)}
+    <p>墙上还留着空位，给下一件作品。</p>
+  </section>;
 }
