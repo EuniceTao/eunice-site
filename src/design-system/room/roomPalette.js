@@ -9,3 +9,6 @@ export const ROOM_PALETTE = {
   daylight: '#fff4e6', sky: '#e3e9ed', bounce: '#c8b9a7', lamp: '#ffe2be',
   exterior: '#dadbd6', roof: '#9198a0', soil: '#4c4138', shadow: '#514840',
 };
+
+/** 已验收的独立沙发样品色值，避免影响客厅其他共享布料。 */
+export const SOFA_PALETTE = { linen: '#d8cbb3', sheen: '#f5eadb', seam: '#cbbfa9', pillow: '#8297a4', feet: '#493426' };

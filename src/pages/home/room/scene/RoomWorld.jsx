@@ -12,16 +12,17 @@ export function RoomWorld({ items, selectedId, onSelect, htmlPortal, onOpenCat }
   React.useEffect(() => () => materials.dispose(), [materials]);
   return (
     <group>
-      <ambientLight intensity={0.35} color={C.daylight} />
-      <hemisphereLight args={[C.sky, C.bounce, 0.95]} />
+      <directionalLight position={[1.5, 3, 2.5]} intensity={0.65} color={C.daylight} />
+      <ambientLight intensity={0.25} color={C.daylight} />
+      <hemisphereLight args={[C.sky, C.bounce, 1.1]} />
       {/* 日光穿过真实窗洞；限制实时阴影光源数量，保持家具接地而非全场泛亮。 */}
       <directionalLight
-        castShadow position={[-3.8, 5.8, -9.8]} intensity={3.1} color={C.daylight}
+        castShadow position={[-3.8, 5.8, -9.8]} intensity={2.35} color={C.daylight}
         shadow-mapSize={[2048, 2048]} shadow-camera-left={-7} shadow-camera-right={7}
         shadow-camera-top={7} shadow-camera-bottom={-7} shadow-camera-near={0.5} shadow-camera-far={22}
         shadow-bias={-0.00012} shadow-normalBias={0.018}
       />
-      <Environment resolution={128} frames={1} environmentIntensity={0.55}>
+      <Environment resolution={128} frames={1} environmentIntensity={0.7}>
         <Lightformer intensity={2.8} position={[-2, 2.5, -4]} scale={[4.3, 2.8, 1]} color={C.sky} />
         <Lightformer intensity={0.8} position={[0, 3, 1]} rotation={[Math.PI / 2, 0, 0]} scale={[5, 5, 1]} color={C.daylight} />
       </Environment>

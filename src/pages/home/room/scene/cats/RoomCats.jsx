@@ -6,7 +6,7 @@ import { isObjectActivation } from '../roomNavigation';
 import { createIdleRig } from './createIdleRig';
 
 const residents = [
-  { id: 'cat-blue', asset: 'cats/q-blue-white.glb', position: [-2.92, 0.56, 0.65], angle: 1.05 },
+  { id: 'cat-blue', asset: 'cats/q-blue-white.glb', position: [-2.92, 0.60, 0.65], angle: 1.05 },
   { id: 'cat-tabby', asset: 'cats/q-tabby.glb', position: [-1.65, 0.046, 1.88], angle: 0.7 },
 ];
 

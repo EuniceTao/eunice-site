@@ -6,21 +6,28 @@ import { Timber } from './furniture/RoomDecor';
 
 function Curtain({ materials, position }) {
   const geometry = React.useMemo(() => {
-    const shape = new PlaneGeometry(0.78, 2.88, 48, 16);
+    const shape = new PlaneGeometry(0.78, 2.88, 96, 40);
     const vertices = shape.attributes.position;
     for (let i = 0; i < vertices.count; i += 1) {
       const x = vertices.getX(i);
       const y = vertices.getY(i);
-      const flare = 1 + (1.44 - y) * 0.055;
-      vertices.setX(i, x * flare);
-      vertices.setZ(i, Math.sin(x * 38) * (0.036 + (1.44 - y) * 0.009));
-      vertices.setY(i, y + Math.cos(x * 38) * 0.01 * (1.44 - y));
+      // 上缘收褶，向下逐渐展开；长褶与细褶叠加，避免等距硬波纹。
+      const drop = (1.44 - y) / 2.88;
+      const phase = x * 34 + Math.sin(x * 9) * 0.7;
+      const fold = Math.sin(phase) + Math.sin(phase * 2.07 + 0.6) * 0.18;
+      vertices.setX(i, x * (1 + drop * 0.17));
+      vertices.setZ(i, fold * (0.06 + drop * 0.045) + Math.sin(drop * Math.PI) * 0.025);
+      vertices.setY(i, y + Math.cos(phase) * 0.012 * drop ** 5);
+
     }
     shape.computeVertexNormals();
     return shape;
   }, []);
   React.useEffect(() => () => geometry.dispose(), [geometry]);
-  return <mesh position={position} geometry={geometry} material={materials.curtain} castShadow receiveShadow />;
+  return <group position={position}>
+    <mesh geometry={geometry} material={materials.curtain} castShadow receiveShadow />
+    {Array.from({ length: 7 }, (_, index) => <mesh key={index} position={[-0.35 + index * 0.116, 1.51, 0]} material={materials.chrome}><torusGeometry args={[0.038, 0.006, 8, 16]} /></mesh>)}
+  </group>;
 }
 
 function WindowWall({ materials }) {

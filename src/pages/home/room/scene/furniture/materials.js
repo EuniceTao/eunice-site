@@ -42,10 +42,11 @@ export function createRoomMaterials() {
   const wood = surfaceTexture('wood');
   const floorWood = surfaceTexture('wood', true, [1.5, 0.75]);
   const stone = surfaceTexture('stone');
-  const weave = surfaceTexture('weave', false, [7, 7]);
+  const weave = surfaceTexture('weave', false, [3, 3]);
   const plaster = surfaceTexture('grain', false, [5, 5]);
+  const clothColor = surfaceTexture('weave', true, [3, 3]);
   const standard = (color, roughness = 0.8, extra = {}) => new MeshStandardMaterial({ color, roughness, ...extra });
-  const fabric = (color) => new MeshPhysicalMaterial({ color, roughness: 0.94, sheen: 0.65, sheenRoughness: 0.85, sheenColor: color, bumpMap: weave, bumpScale: 0.002 });
+  const fabric = (color) => new MeshPhysicalMaterial({ color, roughness: 0.94, sheen: 0.8, sheenRoughness: 0.95, sheenColor: color, map: clothColor, bumpMap: weave, bumpScale: 0.0035 });
   const materials = {
     oak: standard(C.oak, 0.53, { map: wood }), walnut: standard(C.walnut, 0.42, { map: wood }),
     floor: standard(C.floor, 0.6, { map: floorWood }), stone: standard(C.stone, 0.64, { map: stone }),
@@ -59,14 +60,14 @@ export function createRoomMaterials() {
     leather: standard(C.leather, 0.55), strap: standard(C.strap, 0.8),
     paper: standard(C.paper, 0.98), book: standard(C.book), petal: standard(C.petal, 0.7),
     leaf: standard(C.leaf, 0.69, { side: DoubleSide }), stem: standard(C.moss, 0.88),
-    soil: standard(C.soil, 1), curtain: standard(C.ceiling, 0.95, { bumpMap: weave, bumpScale: 0.001, side: DoubleSide }),
+    soil: standard(C.soil, 1), curtain: new MeshPhysicalMaterial({ color: C.ceiling, roughness: 1, sheen: 0.8, sheenColor: C.ceiling, sheenRoughness: 1, map: clothColor, bumpMap: weave, bumpScale: 0.002, side: DoubleSide }),
     diffuser: standard(C.paper, 0.5, { emissive: C.lamp, emissiveIntensity: 0.35, side: DoubleSide }),
   };
   return {
     ...materials,
     dispose() {
       Object.values(materials).forEach((material) => material.dispose());
-      [wood, floorWood, stone, weave, plaster].forEach((map) => map.dispose());
+      [wood, floorWood, stone, weave, plaster, clothColor].forEach((map) => map.dispose());
     },
   };
 }
