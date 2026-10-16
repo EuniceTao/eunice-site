@@ -1,0 +1,11 @@
+/* 猫咪相册及房间活动开关，沿用独立空间的纸色、字体和边框。 */
+.cat-space { max-width: 1180px; margin: auto; padding: 40px clamp(24px, 5vw, 80px) 80px; display: grid; grid-template-columns: .8fr 1.2fr; gap: 56px; align-items: center; }
+.cat-space h1 { font-family: var(--font-display, Georgia, serif); font-weight: 400; font-size: clamp(42px, 5vw, 72px); line-height: 1.15; margin: 24px 0; }
+.cat-space header > p:last-child { color: var(--text-muted, #70695f); line-height: 1.8; }
+.cat-space figure { margin: 0; }
+.cat-space img { display: block; width: 100%; max-height: 72vh; object-fit: contain; border-radius: 3px; background: #e8e2d9; }
+.cat-space figcaption { display: flex; gap: 16px; justify-content: space-between; font-size: 12px; color: #756d63; margin-top: 16px; }
+.room-cat-tools { display: flex; flex-wrap: wrap; gap: 10px; padding: 12px 24px; align-items: center; font-size: 12px; color: var(--text-muted, #70695f); }
+.room-cat-tools button { border: 1px solid var(--border, #d8d2c8); border-radius: 24px; padding: 8px 14px; background: var(--surface, #f8f5ef); color: var(--text, #302b26); cursor: pointer; }
+.room-cat-tools button:focus-visible { outline: 2px solid #77584d; outline-offset: 3px; }
+@media(max-width: 767px) { .cat-space { grid-template-columns: 1fr; gap: 24px; padding-top: 12px; } .cat-space img { max-height: none; } .room-cat-tools { padding: 12px 0; } }

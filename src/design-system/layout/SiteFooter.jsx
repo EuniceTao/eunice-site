@@ -13,7 +13,7 @@ export function SiteFooter() {
   const { content } = useSiteBlock('site.footer', {
     fallback: {
       copyrightName: 'Eunice',
-      note: '少即是多。留白、字体与克制的动效，是我喜欢的表达方式。',
+      note: '这里不是一份完成的自我介绍，而是一些持续发生的证据。',
       links: [{ label: 'Design System', to: '/design-system' }],
     },
   });
@@ -52,7 +52,7 @@ export function SiteFooter() {
           )}
         </div>
         <p className="max-w-prose">
-          {content?.note || '少即是多。留白、字体与克制的动效，是我喜欢的表达方式。'}
+          {content?.note || '这里不是一份完成的自我介绍，而是一些持续发生的证据。'}
         </p>
       </Container>
     </footer>

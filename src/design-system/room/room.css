@@ -1,0 +1,375 @@
+/**
+ * @file room.css
+ * @description 首页 3D 小屋、电影式移动端入口与浏览模式控件。
+ */
+
+.house-hero {
+  position: relative;
+  width: 100vw;
+  margin-right: calc(50% - 50vw);
+  margin-left: calc(50% - 50vw);
+  overflow: hidden;
+  background: #17110d;
+  color: #fff;
+  isolation: isolate;
+}
+
+.house-hero__toolbar {
+  position: absolute;
+  top: 26px;
+  right: clamp(24px, 4vw, 64px);
+  left: clamp(24px, 4vw, 64px);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.house-hero__mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.19em;
+  color: rgb(255 255 255 / 0.62);
+}
+
+.house-hero__mark-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #cf9d67;
+  box-shadow: 0 0 16px rgb(230 175 112 / 0.8);
+}
+
+.room-mode-toggle {
+  display: inline-flex;
+  padding: 4px;
+  border: 1px solid rgb(255 255 255 / 0.22);
+  border-radius: 999px;
+  background: rgb(18 13 10 / 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.room-mode-toggle button {
+  min-height: 38px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  color: rgb(255 255 255 / 0.58);
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  transition: color 180ms ease, background 180ms ease;
+}
+
+.room-mode-toggle button:hover { color: #fff; }
+
+.room-mode-toggle button.is-active {
+  background: #eee4d6;
+  color: #241a14;
+}
+
+.room-mode-toggle button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.house-hero__scene {
+  position: relative;
+  z-index: 1;
+}
+
+.house-hero__intro {
+  position: absolute;
+  bottom: clamp(42px, 6vh, 78px);
+  left: clamp(24px, 5vw, 78px);
+  z-index: 20;
+  width: min(660px, 58vw);
+  pointer-events: none;
+}
+
+.house-hero__intro > p,
+.house-hero__index header > p {
+  margin: 0 0 14px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: rgb(255 255 255 / 0.6);
+}
+
+.house-hero__intro h1 {
+  margin: 0;
+  color: #f8f1e8;
+  font-family: 'Songti SC', 'Noto Serif CJK SC', STSong, serif;
+  font-size: clamp(42px, 5.8vw, 84px);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+  text-shadow: 0 5px 28px rgb(16 9 5 / 0.42);
+}
+
+.house-hero__intro h1 span {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-display), 'Songti SC', serif;
+  font-size: 1.18em;
+  font-style: italic;
+  letter-spacing: -0.045em;
+}
+
+.house-hero__intro-row {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 430px);
+  gap: 16px;
+  align-items: start;
+  margin-top: 25px;
+}
+
+.house-hero__intro-row > span {
+  height: 1px;
+  margin-top: 11px;
+  background: rgb(255 255 255 / 0.45);
+}
+
+.house-hero__intro-row p {
+  margin: 0;
+  color: rgb(255 255 255 / 0.72);
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.8;
+  text-shadow: 0 2px 15px rgb(0 0 0 / 0.5);
+}
+
+.room-scene-desktop { display: block; }
+
+.room-canvas-shell {
+  position: relative;
+  height: clamp(650px, calc(100svh - 76px), 880px);
+  min-height: 650px;
+  overflow: hidden;
+  background: #17110d;
+}
+
+.room-canvas-shell canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.room-canvas-fallback {
+  display: grid;
+  height: 100%;
+  place-content: center;
+  padding: 40px;
+  background: #211711;
+  text-align: center;
+}
+
+.room-canvas-fallback__glow {
+  position: absolute;
+  inset: 15% 20%;
+  background: radial-gradient(circle, rgb(200 150 96 / 0.2), transparent 70%);
+}
+
+.room-canvas-fallback p {
+  position: relative;
+  max-width: 460px;
+  color: rgb(255 255 255 / 0.68);
+  line-height: 1.7;
+}
+
+.room-canvas-fallback__links {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.room-canvas-fallback__links button {
+  min-height: 42px;
+  padding: 0 15px;
+  border: 1px solid rgb(255 255 255 / 0.24);
+  color: #fff;
+}
+
+.room-canvas-fallback__links span { margin-right: 7px; color: #d5a36e; }
+
+/* 静态入口按渲染分支选择，不再依靠媒体查询隐藏已挂载的场景。 */
+.room-mobile-path { display: grid; }
+
+.room-mobile-card {
+  position: relative;
+  display: block;
+  min-height: 230px;
+  overflow: hidden;
+  border: 0;
+  border-top: 1px solid rgb(255 255 255 / 0.13);
+  background: #2a1d16;
+  color: #fff;
+  text-align: left;
+}
+
+.room-mobile-card img,
+.room-mobile-card__texture,
+.room-mobile-card__shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.room-mobile-card img { object-fit: cover; filter: saturate(0.78) contrast(0.92); }
+.room-mobile-card__texture { background: radial-gradient(circle at 72% 30%, #7d5b42, #271a13 68%); }
+.room-mobile-card__shade { background: linear-gradient(90deg, rgb(15 9 6 / 0.9), rgb(15 9 6 / 0.2)), linear-gradient(0deg, rgb(13 8 5 / 0.65), transparent 60%); }
+
+.room-mobile-card__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-height: 230px;
+  max-width: 83%;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 28px 24px;
+}
+
+.room-mobile-card__content small {
+  margin-bottom: 12px;
+  color: rgb(255 255 255 / 0.55);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.room-mobile-card__content strong {
+  font-family: 'Songti SC', STSong, serif;
+  font-size: 31px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.room-mobile-card__content > span { margin-top: 12px; color: rgb(255 255 255 / 0.62); font-size: 12px; line-height: 1.65; }
+.room-mobile-card__arrow { position: absolute; right: 22px; bottom: 27px; z-index: 3; font-size: 20px; }
+.room-mobile-card:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }
+
+@media (min-width: 768px) {
+  .house-hero--static .house-hero__toolbar {
+    position: relative;
+    inset: auto;
+    padding: 26px clamp(24px, 4vw, 64px);
+  }
+
+  .house-hero--static .house-hero__intro {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    width: min(960px, 100%);
+    padding: 52px clamp(24px, 5vw, 78px) 64px;
+  }
+
+  .house-hero--static .room-mobile-path {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.house-hero__index {
+  width: min(1320px, calc(100% - 48px));
+  min-height: 720px;
+  margin: 0 auto;
+  padding: 148px 0 78px;
+}
+
+.house-hero__index header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 620px);
+  align-items: end;
+  margin-bottom: 60px;
+}
+
+.house-hero__index header > p { align-self: start; }
+
+.house-hero__index h1 {
+  margin: 0;
+  font-family: 'Songti SC', STSong, serif;
+  font-size: clamp(46px, 6vw, 88px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+}
+
+.house-hero__index h1 span { display: block; color: rgb(255 255 255 / 0.48); }
+
+@keyframes room-hint-pulse {
+  0%, 100% { opacity: 0.35; box-shadow: 0 0 0 0 rgb(225 174 119 / 0); }
+  50% { opacity: 1; box-shadow: 0 0 0 7px rgb(225 174 119 / 0.12); }
+}
+
+/* 与桌面 min-width 条件互补，覆盖浏览器缩放产生的小数宽度。 */
+@media not all and (min-width: 768px) {
+  .house-hero__toolbar {
+    position: relative;
+    top: auto;
+    right: auto;
+    left: auto;
+    padding: 18px 18px 16px;
+  }
+
+  .house-hero__mark { font-size: 8px; letter-spacing: 0.13em; }
+  .room-mode-toggle button { min-height: 36px; padding: 0 12px; font-size: 11px; }
+
+  .house-hero__intro {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    width: auto;
+    padding: 38px 20px 44px;
+    background:
+      radial-gradient(circle at 82% 14%, rgb(184 124 70 / 0.2), transparent 34%),
+      #17110d;
+  }
+
+  .house-hero__intro h1 { font-size: clamp(43px, 14vw, 64px); line-height: 1.02; }
+  .house-hero__intro h1 span { margin-top: 5px; }
+  .house-hero__intro-row { grid-template-columns: 30px 1fr; margin-top: 22px; }
+  .house-hero__intro-row p { font-size: 13px; }
+  .room-scene-desktop { display: none; }
+
+  .house-hero__index {
+    width: calc(100% - 36px);
+    min-height: auto;
+    padding: 42px 0 60px;
+  }
+
+  .house-hero__index header { display: block; margin-bottom: 38px; }
+  .house-hero__index h1 { font-size: 47px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .room-object-label,
+  .room-mode-toggle button { transition: none; }
+  .room-scene-hint span { animation: none; }
+}
+
+.room-scene-loading {
+  display: grid;
+  height: clamp(650px, calc(100svh - 76px), 880px);
+  place-items: center;
+  background: radial-gradient(circle at 50% 45%, #3a291e, #17110d 68%);
+  color: rgb(255 255 255 / 0.58);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+}
+
+@media not all and (min-width: 768px) {
+  .room-scene-loading { display: none; }
+}

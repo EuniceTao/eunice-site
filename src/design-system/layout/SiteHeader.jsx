@@ -1,6 +1,6 @@
 /**
  * @file SiteHeader.jsx
- * @description 顶部导航：黑白灰极简（白底+底边线），以字重/字号作为唯一强调。
+ * @description 顶部导航：让房间、工作、笔记、近况与关于我都能被直接访问。
  */
 
 import React from 'react';
@@ -10,22 +10,21 @@ import { Container } from './Container';
 import { publicUrl } from '../../lib/publicUrl';
 
 const navItems = [
-  { to: '/', label: 'Home' }, // 首页
-  { to: '/experience', label: 'Experience' }, // 经验
-  { to: '/more', label: 'More' }, // Notes + Now 聚合入口
-  { to: '/contact', label: 'Contact' }, // 联系
+  { to: '/', label: '首页' },
+  { to: '/work', label: '我的工作' },
+  { to: '/blog', label: '随手写写' },
+  { to: '/now', label: '最近' },
+  { to: '/about', label: '关于我' },
 ];
 
 function SiteNavLink({ to, children }) {
   const baseClassName =
-    'font-mono text-[12px] uppercase tracking-[0.15em] text-[color:var(--text-muted)] transition-colors duration-300 hover:text-[color:var(--text)]';
+    'font-mono text-[11px] uppercase tracking-[0.15em] text-[color:var(--text-muted)] transition-colors duration-300 hover:text-[color:var(--text)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black';
 
   return (
     <NavLink
       to={to}
-      className={({ isActive }) =>
-        cn(baseClassName, isActive && 'text-[color:var(--text)]')
-      }
+      className={({ isActive }) => cn(baseClassName, isActive && 'text-[color:var(--text)]')}
     >
       {children}
     </NavLink>
@@ -34,16 +33,16 @@ function SiteNavLink({ to, children }) {
 
 export function SiteHeader({ brand = 'Eunice' }) {
   return (
-    <header className="sticky top-0 z-40 bg-[color:var(--bg)] border-b border-[color:var(--border)]">
+    <header className="sticky top-0 z-40 border-b border-[color:var(--border)] bg-[color:var(--bg)]">
       <Container className="flex items-center justify-between py-5">
         <NavLink
           to="/"
-          className="font-display text-[18px] leading-none font-light text-[color:var(--text)]"
+          className="font-display text-[20px] font-light leading-none text-[color:var(--text)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
         >
           {brand}
         </NavLink>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-7 md:flex" aria-label="主要导航">
           {navItems.map((item) => (
             <SiteNavLink key={item.to} to={item.to}>
               {item.label}
@@ -51,16 +50,16 @@ export function SiteHeader({ brand = 'Eunice' }) {
           ))}
         </nav>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-5">
           <a
             href={publicUrl('resume.pdf')}
-            className="font-mono text-[12px] uppercase tracking-[0.15em] text-[color:var(--text-muted)] transition-colors duration-300 hover:text-[color:var(--text)]"
+            className="hidden font-mono text-[10px] uppercase tracking-[0.15em] text-[color:var(--text-muted)] transition-colors hover:text-[color:var(--text)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black sm:inline"
           >
-            下载简历
+            Résumé
           </a>
           <NavLink
             to="/contact"
-            className="md:hidden font-mono text-[12px] uppercase tracking-[0.15em] text-[color:var(--text-muted)] transition-colors duration-300 hover:text-[color:var(--text)]"
+            className="border border-[color:var(--text)] px-3 py-2 font-mono text-[10px] uppercase tracking-[0.15em] text-[color:var(--text)] transition-colors hover:bg-[color:var(--text)] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
           >
             Contact
           </NavLink>
@@ -69,4 +68,3 @@ export function SiteHeader({ brand = 'Eunice' }) {
     </header>
   );
 }
-

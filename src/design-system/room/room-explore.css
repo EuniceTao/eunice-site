@@ -1,0 +1,88 @@
+/** 仅供可交互房间的轻量覆盖层；静态入口与目录继续沿用 room.css。 */
+.house-hero--room:not(.house-hero--static) {
+  --room-ui-ink: #332d2e;
+  --room-ui-muted: #6c6160;
+  --room-ui-accent: #743744;
+  --room-ui-hover: #ece5df;
+  --room-ui-sky: #e3e9ed;
+  --room-ui-surface: rgb(249 246 241 / 96%);
+  --room-ui-border: rgb(89 64 55 / 17%);
+  background: var(--room-ui-sky);
+  color: var(--room-ui-ink);
+}
+
+@media (min-width: 768px) {
+  .house-hero--room:not(.house-hero--static) .house-hero__toolbar { top: 22px; }
+  .house-hero--room:not(.house-hero--static) .house-hero__mark { padding: 8px 11px; border-radius: 6px; background: var(--room-ui-surface); color: var(--room-ui-ink); font-size: 11px; }
+  .house-hero--room:not(.house-hero--static) .house-hero__mark-dot { background: var(--room-ui-accent); box-shadow: none; }
+  .house-hero--room:not(.house-hero--static) .room-mode-toggle { background: var(--room-ui-surface); border-color: var(--room-ui-border); }
+  .house-hero--room:not(.house-hero--static) .room-mode-toggle button { min-height: 44px; color: var(--room-ui-muted); }
+  .house-hero--room:not(.house-hero--static) .room-mode-toggle button.is-active { background: var(--room-ui-accent); color: #fff; }
+  .house-hero--room:not(.house-hero--static) .room-mode-toggle button:focus-visible { outline-color: var(--room-ui-accent); }
+  .house-hero--room:not(.house-hero--static) .house-hero__intro {
+    top: 88px;
+    bottom: auto;
+    left: clamp(24px, 4vw, 64px);
+    width: 300px;
+    padding: 16px 18px;
+    border-radius: 8px;
+    background: var(--room-ui-surface);
+  }
+  .house-hero--room:not(.house-hero--static) .house-hero__intro > p { color: var(--room-ui-muted); font-size: 10px; margin-bottom: 10px; }
+  .house-hero--room:not(.house-hero--static) .house-hero__intro h1 { color: var(--room-ui-ink); font-size: 26px; line-height: 1.3; letter-spacing: -.035em; text-shadow: none; }
+  .house-hero--room:not(.house-hero--static) .house-hero__intro h1 span { display: inline; margin: 0; font-size: 1em; font-style: normal; }
+  .house-hero--room:not(.house-hero--static) .house-hero__intro-row { display: block; margin-top: 9px; max-width: 270px; }
+  .house-hero--room:not(.house-hero--static) .house-hero__intro-row > span { display: none; }
+  .house-hero--room:not(.house-hero--static) .house-hero__intro-row p { color: var(--room-ui-muted); font-size: 12px; line-height: 1.8; text-shadow: none; }
+}
+
+.room-scene-desktop .room-canvas-shell { background: var(--room-ui-sky); cursor: grab; }
+.room-scene-desktop .room-canvas-shell:active { cursor: grabbing; }
+.room-scene-desktop .room-canvas-shell:focus-visible { outline: 2px solid var(--room-ui-accent); outline-offset: -3px; }
+.room-object-label {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+.room-object-label i { width: 10px; height: 10px; border: 2px solid #fff; border-radius: 50%; background: var(--room-ui-accent); box-shadow: 0 0 0 4px rgb(249 246 241 / 32%), 0 2px 8px #59403730; transition: transform 180ms ease; }
+.room-object-label span { position: absolute; top: 43px; left: 50%; transform: translate(-50%, -3px); padding: 7px 12px; border-radius: 6px; background: var(--room-ui-surface); color: var(--room-ui-ink); font-size: 12px; white-space: nowrap; box-shadow: 0 3px 14px #59403714; opacity: 0; pointer-events: none; transition: opacity 180ms ease, transform 180ms ease; }
+.room-object-label:is(:hover, :focus-visible, .is-hovered, .is-selected) span { opacity: 1; transform: translate(-50%, 0); }
+.room-object-label:is(:hover, .is-hovered, .is-selected) i { transform: scale(1.2); }
+.room-object-label:focus-visible { outline: 2px solid var(--room-ui-accent); outline-offset: 1px; }
+
+.room-explore-controls { position: absolute; z-index: 20; right: clamp(24px, 4vw, 64px); bottom: 28px; cursor: default; }
+.room-explore-help { width: fit-content; margin: 0 0 10px auto; padding: 7px 10px; border-radius: 6px; background: var(--room-ui-surface); color: var(--room-ui-muted); text-align: right; font-size: 12px; line-height: 1.5; }
+.room-explore-tools { display: flex; align-items: center; padding: 4px; border: 1px solid var(--room-ui-border); border-radius: 12px; background: var(--room-ui-surface); box-shadow: 0 6px 24px #59403712; backdrop-filter: blur(16px); }
+.room-explore-tools > button, .room-object-directory summary { display: flex; justify-content: center; align-items: center; gap: 8px; min-width: 44px; min-height: 44px; border: 0; border-radius: 8px; background: transparent; color: var(--room-ui-ink); cursor: pointer; }
+.room-explore-tools > button:hover, .room-object-directory summary:hover { background: var(--room-ui-hover); }
+.room-explore-tools__divider { height: 20px; width: 1px; margin: 0 5px; background: var(--room-ui-border); }
+.room-object-directory summary { padding: 0 12px; font-size: 12px; list-style: none; }
+.room-object-directory summary::-webkit-details-marker { display: none; }
+.room-object-directory__list { position: absolute; bottom: 68px; right: 0; width: 215px; padding: 8px; border: 1px solid var(--room-ui-border); border-radius: 12px; background: var(--room-ui-surface); box-shadow: 0 8px 30px #59403718; backdrop-filter: blur(16px); }
+.room-object-directory__list button { display: flex; gap: 16px; align-items: center; width: 100%; min-height: 44px; padding: 0 12px; background: transparent; border: 0; border-radius: 7px; text-align: left; color: var(--room-ui-ink); font-size: 13px; cursor: pointer; }
+.room-object-directory__list button span { color: var(--room-ui-muted); font-family: var(--font-mono); font-size: 11px; }
+.room-object-directory__list button:is(:hover, [aria-pressed="true"]) { background: var(--room-ui-hover); }
+.room-explore-tools :is(button, summary):focus-visible, .room-focus-card :is(button, a):focus-visible { outline: 2px solid var(--room-ui-accent); outline-offset: 2px; }
+
+.room-focus-card { position: absolute; z-index: 21; left: clamp(24px, 4vw, 64px); bottom: 28px; width: min(310px, 38vw); max-height: calc(100% - 245px); overflow: auto; padding: 8px 24px 22px; border: 1px solid var(--room-ui-border); border-radius: 14px; background: var(--room-ui-surface); color: var(--room-ui-ink); box-shadow: 0 8px 35px #59403712; backdrop-filter: blur(20px); cursor: auto; animation: room-card-appear 240ms ease-out both; }
+.room-focus-card__back { display: flex; align-items: center; gap: 7px; min-height: 44px; width: 100%; padding: 0; background: transparent; border: 0; border-bottom: 1px solid var(--room-ui-border); color: var(--room-ui-muted); font-size: 12px; cursor: pointer; }
+.room-focus-card__back span { margin-left: auto; color: var(--room-ui-muted); font-size: 11px; }
+.room-focus-card__eyebrow { margin: 20px 0 7px; color: var(--room-ui-muted); font-size: 11px; }
+.room-focus-card h2 { margin: 0; font-family: 'Songti SC', STSong, serif; font-size: 25px; font-weight: 400; line-height: 1.3; }
+.room-focus-card h2:focus { outline: none; }
+.room-focus-card__description { margin: 14px 0 15px; color: var(--room-ui-muted); font-size: 13px; line-height: 1.85; }
+.room-focus-card__link { display: flex; align-items: center; justify-content: space-between; min-height: 44px; padding-top: 8px; border-top: 1px solid var(--room-ui-border); color: var(--room-ui-accent); font-size: 13px; text-decoration: none; }
+.room-focus-card__link:hover { color: var(--room-ui-ink); }
+@keyframes room-card-appear { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .room-focus-card { animation: none; } .room-object-label i, .room-object-label span { transition: none; } }
+
+/* Html 挂载到独立空容器，避免与 Canvas 的 React DOM 子节点争用父级。 */
+.room-html-layer { position: absolute; inset: 0; pointer-events: none; z-index: 12; overflow: hidden; }
+.room-html-layer .room-object-label { pointer-events: auto; }
